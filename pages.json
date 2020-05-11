@@ -1,0 +1,61 @@
+{
+	"pages": [
+		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/home/index",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/zonghejiance",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/shift-repair",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/electronic",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/trouble-register",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/knowledge",
+			"style": {}
+		},
+		{
+			"path": "components/video-detail/video-detail",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/switch-machine",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/switch-process/index",
+			"style": {}
+		},
+		{
+			"path": "pages/basic/switch-process/result",
+			"style": {}
+		},
+		{
+			"path":"pages/basic/tuzhi-detail",
+			"style": {}
+		}
+	],
+	"globalStyle": {
+		"mp-alipay": {
+			/* 支付宝小程序特有相关 */
+			"transparentTitle": "always",
+			"allowsBounceVertical": "NO"
+		},
+		"navigationBarBackgroundColor": "#0081ff",
+		"navigationBarTitleText": "智能运维",
+		"navigationStyle": "custom",
+		"navigationBarTextStyle": "white"
+	},
+	"usingComponts": true
+}
