@@ -1,6 +1,6 @@
 <template>
 	<view class="document-wrapper">
-		<view v-if="documentList.length">
+		<view v-if="list.length">
 			<view class="cu-bar bg-white search">
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>
@@ -11,12 +11,17 @@
 				</view>
 			</view>
 			<view class="tuzhi-list">
-				<image src="/static/nocontent.png"  style="width: 400upx;height: 400upx;"></image>
 				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
 				 @scroll="scroll">
-					<view class="tuzhi-item" v-for="(item, index) in documentList" :key="index">
+				 <view class="cu-item  padding margin-bottom-sm" v-for="(item, index) in list" :key="index">
+				 	<view class="content" @tap="previewDoc(item.filePath)">
+				 		<text class="cuIcon-file text-green margin-right-sm" style="font-size: 44upx;"></text>
+				 		<text class="text-grey">{{item.title}}</text>
+				 	</view>
+				 </view>
+					<!-- <view class="tuzhi-item" v-for="(item, index) in documentList" :key="index">
 						<view class="tuzhi-title" @tap="previewDoc(item.filePath)">{{item.title}}</view>
-					</view>
+					</view> -->
 				</scroll-view>
 			</view>
 			<image v-show="old.scrollTop > 300" @tap="goTop" class="link-top" src="../../static/knowledge/top.png"></image>
