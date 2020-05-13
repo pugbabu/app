@@ -15,7 +15,7 @@
 			 @scroll="scroll">
 				<view class="tuzhi-item" v-for="(item, index) in list" :key="index">
 					<view class="tuzhi-title">{{item.title}}</view>
-					<image :src="item.image" @tap="toDetail(item.image)"></image>
+					<image :lazy-load="true" :src="item.image" @tap="preImg(item.image)"></image>
 				</view>
 			</scroll-view>
 		</view>
@@ -78,7 +78,8 @@
 				scrollTop: 0,
 				old: {
 					scrollTop: 0
-				}
+				},
+				imgShow: false,
 			}
 		},
 		components: {
@@ -113,6 +114,21 @@
 					icon: 'none',
 					title: '暂无图纸'
 				})
+			},
+			preImg(image) {
+				if (this.imgShow) { //防止点击过快导致重复调用
+					return;
+				}
+				this.imgShow = true;
+				setTimeout(() => {
+					this.imgShow = false;
+				}, 1000)
+				setTimeout(() => {
+					uni.previewImage({
+						current: 0,
+						urls: [image]
+					})
+				}, 150)
 			}
 		}
 	}

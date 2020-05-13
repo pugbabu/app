@@ -1,5 +1,8 @@
 <template>
-	<view class="index">
+	<view class="index" style="padding-top: 40upx;">
+		<cu-custom bgColor="bg-dark" :isBack="true">
+			<block slot="backText">返回</block>
+		</cu-custom>
 		<image :src="src" mode="widthFix" @click="preImg(index)"></image>
 		<!-- #ifndef H5 -->
 		<view class="detail-btn-view">

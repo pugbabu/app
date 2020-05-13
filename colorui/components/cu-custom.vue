@@ -59,6 +59,7 @@
 				if (this.isManual) {
 					this.$emit('back')
 				} else {
+					console.log(uni)
 					uni.navigateBack({
 						delta: 1
 					});
