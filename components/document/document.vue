@@ -11,14 +11,14 @@
 				</view>
 			</view>
 			<view class="tuzhi-list">
-				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
-				 @scroll="scroll">
-				 <view class="cu-item  padding margin-bottom-sm" v-for="(item, index) in list" :key="index">
-				 	<view class="content" @tap="previewDoc(item.filePath)">
-				 		<text class="cuIcon-file text-green margin-right-sm" style="font-size: 44upx;"></text>
-				 		<text class="text-grey">{{item.title}}</text>
-				 	</view>
-				 </view>
+				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
+				 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
+					<view class="cu-item  padding margin-bottom-sm" v-for="(item, index) in list" :key="index" @tap="previewDoc(item.title, item.filePath)">
+						<view class="content">
+							<text class="cuIcon-file text-green margin-right-sm" style="font-size: 44upx;"></text>
+							<text class="text-grey">{{item.title}}</text>
+						</view>
+					</view>
 					<!-- <view class="tuzhi-item" v-for="(item, index) in documentList" :key="index">
 						<view class="tuzhi-title" @tap="previewDoc(item.filePath)">{{item.title}}</view>
 					</view> -->
@@ -29,12 +29,16 @@
 		<view v-else>
 			<no-data text="暂无文档"></no-data>
 		</view>
-		
+
 	</view>
 </template>
 
 <script>
-	import NoData from '@/components/no-data/no-data.vue'
+	import NoData from '@/components/no-data/no-data.vue';
+	// #ifdef APP-PLUS  
+	const office = uni.requireNativePlugin('Jiang-OfficeView');
+	console.log(office,'office')
+	// #endif
 	export default {
 		props: {
 			list: {
@@ -47,12 +51,10 @@
 				old: {
 					scrollTop: 0
 				},
-				documentList: [
-					{
-						title: '文档第三方的',
-						filePath: 'http://192.168.196.254:3000/assets/docs/resume.pdf'
-					}
-				],
+				documentList: [{
+					title: '文档第三方的',
+					filePath: 'http://192.168.196.254:3000/assets/docs/resume.pdf'
+				}],
 			}
 		},
 		components: {
@@ -84,7 +86,7 @@
 				let _this = this
 				uni.request({
 					url: 'http://192.168.196.254:3000/file/list',
-					data : {
+					data: {
 						type: '2'
 					},
 					success: (result) => {
@@ -96,35 +98,50 @@
 					}
 				})
 			},
-			previewDoc(filePath) {
+			previewDoc(title, filePath) {
 				console.log('previewDoc')
 				console.log(uni)
-				uni.downloadFile({
-				    url: filePath,  
-				    success: (downloadResult) => {  
-						console.log(downloadResult, 'downloadResult')
-						var file = downloadResult.tempFilePath;
-				        if (downloadResult.statusCode === 200) {  
-							 uni.openDocument({
-								filePath: file,
-								success: function (res) {
-								  console.log('打开文档成功');
-								}
-							  });
-				          
-				        }  
-				    },
-					fail() {
-						console.log('preview fail')
-					}
-				});
+				let fileType = title.split('.')[1] == 'doc' ? 'docx' : 'pdf'
+				// #ifdef APP-PLUS 
+				office.open({
+						url: filePath,
+						topBarColor: '#3394EC',
+						title: title,
+						fileType: fileType
+					},
+					result => {
+						console.log(result)
+						if (result.code == 1) {
+
+						}
+					});
+				// #endif
+				// uni.downloadFile({
+				//     url: filePath,  
+				//     success: (downloadResult) => {  
+				// 		console.log(downloadResult, 'downloadResult')
+				// 		var file = downloadResult.tempFilePath;
+				//         if (downloadResult.statusCode === 200) {  
+				// 			 uni.openDocument({
+				// 				filePath: file,
+				// 				success: function (res) {
+				// 				  console.log('打开文档成功');
+				// 				}
+				// 			  });
+
+				//         }  
+				//     },
+				// 	fail() {
+				// 		console.log('preview fail')
+				// 	}
+				// });
 			}
 		}
 	}
 </script>
 
 <style>
-	.document-wrapper{
+	.document-wrapper {
 		background: #fff;
 	}
 </style>
