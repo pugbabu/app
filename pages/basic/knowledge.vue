@@ -5,8 +5,8 @@
 			<block slot="content">资料库</block>
 		</cu-custom>
 		<view class="knowledge">
-			<tu-zhi v-if="pageUrl == 'tuzhi'" :list="drawList"></tu-zhi>
-			<document-comp v-else :list="documentList" @search="documentSearch"></document-comp>
+			<tu-zhi v-if="pageUrl == 'tuzhi'" :type="type"></tu-zhi>
+			<document-comp v-else :type="type"></document-comp>
 			<!-- <video-comp v-else-if="pageUrl == 'shipin'"></video-comp> -->
 			<!-- <tabbar-upload v-else></tabbar-upload> -->
 			<view class="cu-bar tabbar bg-white shadow foot">
@@ -58,13 +58,13 @@
 			DocumentComp
 		},
 		created() {
-			this.getFiles(this.type)
+			// this.getFiles(this.type)
 		},
 	    methods: {
 	      NavChange(e) {
 			this.pageUrl = e.currentTarget.dataset.cur
 			this.type = e.currentTarget.dataset.type
-			this.getFiles(type)
+			// this.getFiles(this.type)
 	      },
 		  documentSearch(title) {
 			  if (!title) {

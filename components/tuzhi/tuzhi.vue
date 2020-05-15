@@ -3,7 +3,7 @@
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input type="text" placeholder="请输入图纸名称" confirm-type="search"></input>
+				<input v-model="searchText" type="text" placeholder="请输入图纸名称" confirm-type="search"></input>
 			</view>
 			<view class="action">
 				<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
@@ -80,6 +80,7 @@
 					scrollTop: 0
 				},
 				imgShow: false,
+				searchText: ''
 			}
 		},
 		components: {

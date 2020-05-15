@@ -37,12 +37,13 @@
 	import NoData from '@/components/no-data/no-data.vue';
 	// #ifdef APP-PLUS  
 	const office = uni.requireNativePlugin('Jiang-OfficeView');
-	console.log(office,'office')
+	console.log(office, 'office')
 	// #endif
 	export default {
 		props: {
-			list: {
-				type: Array
+			type: {
+				type: String,
+				default: ''
 			}
 		},
 		data() {
@@ -55,15 +56,19 @@
 					title: '文档第三方的',
 					filePath: 'http://192.168.196.254:3000/assets/docs/resume.pdf'
 				}],
-				searchText: ''
+				searchText: '',
+				list: []
 			}
 		},
 		components: {
 			NoData
 		},
+		created() {
+			this.getFiles()
+		},
 		methods: {
 			search() {
-				this.$emit('search', this.searchText)
+				this.getFiles(this.searchText)
 			},
 			upper: function(e) {
 				console.log(e)
@@ -80,19 +85,31 @@
 					this.scrollTop = 0
 				});
 			},
-			getFiles() {
+			getFiles(title) {
+				console.log('get files ')
+				let data
+				if (title) {
+					data = {
+						type: this.type,
+						title
+					}
+				} else {
+					data = {
+						type: this.type
+					}
+				}
 				let _this = this
 				uni.request({
 					url: 'http://192.168.196.254:3000/file/list',
-					data: {
-						type: '2'
-					},
+					data: data,
 					success: (result) => {
 						console.log(result, 'fileresult')
 						if (result.data.code == 200) {
-							_this.documentList = result.data.data.files || []
-							console.log(_this.documentList)
+							_this.list = result.data.data.files || []
 						}
+					},
+					fail() {
+						console.log('faile get file')
 					}
 				})
 			},
@@ -136,7 +153,7 @@
 			},
 			handleInput() {
 				if (!this.searchText) {
-					this.$emit('search', 'none')
+					this.getFiles()
 				}
 			}
 		}

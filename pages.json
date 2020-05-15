@@ -6,6 +6,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/login/login",
+			"style": {}
+		},
+		{
 			"path": "pages/basic/zonghejiance",
 			"style": {}
 		},
