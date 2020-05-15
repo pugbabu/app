@@ -9,7 +9,10 @@
 				<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
 			</view>
 		</view>
-		<view v-if="list.length">
+		<view v-if="!list.length && hasLoaded">
+			<no-data text="暂无文档"></no-data>
+		</view>
+		<view v-else>
 			<view class="tuzhi-list">
 				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
 				 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
@@ -26,9 +29,7 @@
 			</view>
 			<image v-show="old.scrollTop > 300" @tap="goTop" class="link-top" src="../../static/knowledge/top.png"></image>
 		</view>
-		<view v-else>
-			<no-data text="暂无文档"></no-data>
-		</view>
+		
 
 	</view>
 </template>
@@ -43,7 +44,8 @@
 		props: {
 			type: {
 				type: String,
-				default: ''
+				default: '',
+				hasLoaded: false
 			}
 		},
 		data() {
@@ -106,6 +108,7 @@
 						console.log(result, 'fileresult')
 						if (result.data.code == 200) {
 							_this.list = result.data.data.files || []
+							_this.hasLoaded = true
 						}
 					},
 					fail() {

@@ -127,6 +127,7 @@
 	align-items: center;
 	border-radius: 0 0 15% 15%;
 	text-align: center;
+	padding-top: 60upx;
 }
 .login-wrapper .logo{
 	width: 50px;
@@ -167,7 +168,7 @@
 	padding-bottom: 60px;
 	box-sizing: border-box;
 	position: absolute;
-	top: 100px;
+	top: 120px;
 	left: 50%;
 	transform: translateX(-50%);
 	background: #fff;

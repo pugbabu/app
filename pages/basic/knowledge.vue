@@ -47,7 +47,7 @@
 				pageUrl: 'tuzhi',
 				documentList: [],
 				drawList: [],
-				type: '2'
+				type: '1'
 	        }
 	    },
 		components: {
@@ -63,7 +63,7 @@
 	    methods: {
 	      NavChange(e) {
 			this.pageUrl = e.currentTarget.dataset.cur
-			this.type = e.currentTarget.dataset.type
+			this.type = e.currentTarget.dataset.type.toString()
 			// this.getFiles(this.type)
 	      },
 		  documentSearch(title) {

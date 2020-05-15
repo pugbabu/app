@@ -25,33 +25,61 @@
 							            console.log(data.wgtUrl)
 										 uni.showLoading({  
 											title: '更新中'  
-										})  
-							            uni.downloadFile({  
-							                url: data.wgtUrl,  
-							                success: (downloadResult) => {  
-							            		console.log(downloadResult, 'downloadResult')
-							                    if (downloadResult.statusCode === 200) {  
-							                        plus.runtime.install(downloadResult.tempFilePath, {  
-							                            force: false  
-							                        }, function() {  
-							                            console.log('install success...');
-														uni.hideLoading() 
-														  uni.showToast({
-														  	icon: 'none',
-														  	title: '更新成功，即将重启应用'
-														  })
-							                            plus.runtime.restart();  
-							                        }, function(e) {  
-														console.error('install fail...');
-														uni.showToast({
-															icon: 'none',
-															title: '更新失败'
-														})
-							                        });  
-							                    }  
-												uni.hideLoading()  
-							                }  
-							            });
+										})
+										  plus.nativeUI.showWaiting("下载wgt文件...");  
+										  plus.downloader.createDownload( data.wgtUrl, {filename:"_doc/update/"}, function(d,status){  
+										      if ( status == 200 ) {   
+										          console.log("下载wgt成功："+d.filename);  
+												  plus.nativeUI.showWaiting("安装wgt文件...");  
+												  plus.runtime.install(d.filename,{},function(){  
+												      plus.nativeUI.closeWaiting();  
+												      console.log("安装wgt文件成功！");  
+												      plus.nativeUI.alert("应用资源更新完成！",function(){  
+												          plus.runtime.restart();  
+												      });  
+												  },function(e){  
+												      plus.nativeUI.closeWaiting();  
+												      console.log("安装wgt文件失败["+e.code+"]："+e.message);  
+												      plus.nativeUI.alert("安装wgt文件失败["+e.code+"]："+e.message);  
+												  }); 
+										      } else {  
+										          console.log("下载wgt失败！");  
+										          plus.nativeUI.alert("下载wgt失败！");  
+										      }  
+										      plus.nativeUI.closeWaiting();  
+										  }).start();  
+							   //          const downloadTask = uni.downloadFile({  
+							   //              url: data.wgtUrl,  
+							   //              success: (downloadResult) => {  
+							   //          		console.log(downloadResult, 'downloadResult')
+							   //                  if (downloadResult.statusCode === 200) {  
+							   //                      plus.runtime.install(downloadResult.tempFilePath, {  
+							   //                          force: false  
+							   //                      }, function() {  
+							   //                          console.log('install success...');
+										// 				uni.hideLoading() 
+										// 				  uni.showToast({
+										// 				  	icon: 'none',
+										// 				  	title: '更新成功，即将重启应用'
+										// 				  })
+							   //                          plus.runtime.restart();  
+							   //                      }, function(e) {  
+										// 				console.error('install fail...');
+										// 				uni.showToast({
+										// 					icon: 'none',
+										// 					title: '更新失败'
+										// 				})
+							   //                      });  
+							   //                  }  
+										// 		uni.hideLoading()  
+							   //              }  
+							   //          });
+										//  downloadTask.onProgressUpdate((res) => {  
+										// 	console.log('下载进度' + res.progress + '%');  
+										// 	console.log('已经下载的数据长度' + res.totalBytesWritten / 1024 + 'Kb');  
+										// 	console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite / 1024 + 'Kb');  
+										// 	// 测试条件，取消下载任务。  
+										// });  
 							        } else if (res.cancel) {
 							            console.log('用户点击取消');
 							        }

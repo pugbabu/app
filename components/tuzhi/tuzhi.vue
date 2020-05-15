@@ -3,7 +3,7 @@
 		<view class="cu-bar bg-white search">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input v-model="searchText" type="text" placeholder="请输入图纸名称" confirm-type="search"></input>
+				<input @input="handleInput" v-model="searchText" type="text" placeholder="请输入图纸名称" confirm-type="search"></input>
 			</view>
 			<view class="action">
 				<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
@@ -15,7 +15,7 @@
 			 @scroll="scroll">
 				<view class="tuzhi-item" v-for="(item, index) in list" :key="index">
 					<view class="tuzhi-title">{{item.title}}</view>
-					<image :lazy-load="true" :src="item.image" @tap="preImg(item.image)"></image>
+					<image :lazy-load="true" :src="item.filePath" @click="preImg(item.filePath)"></image>
 				</view>
 			</scroll-view>
 		</view>
@@ -31,6 +31,12 @@
 <script>
 	import NavBar from '../nav/nav.vue'
 	export default {
+		props:{
+			type: {
+				type: String,
+				default: ''
+			}
+		},
 		data() {
 			return {
 				navs: [{
@@ -86,6 +92,10 @@
 		components: {
 			NavBar
 		},
+		created() {
+			console.log('crated')
+			this.getFiles()
+		},
 		methods: {
 			tabChange(index) {
 				console.log(index)
@@ -111,9 +121,43 @@
 				});
 			},
 			search() {
-				uni.showToast({
-					icon: 'none',
-					title: '暂无图纸'
+				this.getFiles(this.searchText)
+			},
+			handleInput() {
+				setTimeout(() => {
+					if (!this.searchText) {
+						this.getFiles()
+					}
+				})
+				
+			},
+			getFiles(title) {
+				console.log('get files ')
+				let data
+				if (title) {
+					data = {
+						type: this.type,
+						title
+					}
+				} else {
+					data = {
+						type: this.type
+					}
+				}
+				let _this = this
+				uni.request({
+					url: 'http://192.168.196.254:3000/file/list',
+					data: data,
+					success: (result) => {
+						console.log(result, 'fileresult')
+						if (result.data.code == 200) {
+							_this.list = result.data.data.files || []
+							_this.hasLoaded = true
+						}
+					},
+					fail() {
+						console.log('faile get file')
+					}
 				})
 			},
 			preImg(image) {
