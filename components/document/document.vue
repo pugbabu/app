@@ -1,15 +1,15 @@
 <template>
 	<view class="document-wrapper">
-		<view v-if="list.length">
-			<view class="cu-bar bg-white search">
-				<view class="search-form round">
-					<text class="cuIcon-search"></text>
-					<input type="text" placeholder="请输入文档名称" confirm-type="search"></input>
-				</view>
-				<view class="action">
-					<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
-				</view>
+		<view class="cu-bar bg-white search">
+			<view class="search-form round">
+				<text class="cuIcon-search"></text>
+				<input @input="handleInput" v-model="searchText" type="text" placeholder="请输入文档名称" confirm-type="search"></input>
 			</view>
+			<view class="action">
+				<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
+			</view>
+		</view>
+		<view v-if="list.length">
 			<view class="tuzhi-list">
 				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
 				 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
@@ -55,6 +55,7 @@
 					title: '文档第三方的',
 					filePath: 'http://192.168.196.254:3000/assets/docs/resume.pdf'
 				}],
+				searchText: ''
 			}
 		},
 		components: {
@@ -62,10 +63,7 @@
 		},
 		methods: {
 			search() {
-				uni.showToast({
-					icon: 'none',
-					title: '暂无文档'
-				})
+				this.$emit('search', this.searchText)
 			},
 			upper: function(e) {
 				console.log(e)
@@ -101,7 +99,7 @@
 			previewDoc(title, filePath) {
 				console.log('previewDoc')
 				console.log(uni)
-				let fileType = title.split('.')[1] == 'doc' ? 'docx' : 'pdf'
+				let fileType = title.split('.')[1]
 				// #ifdef APP-PLUS 
 				office.open({
 						url: filePath,
@@ -135,6 +133,11 @@
 				// 		console.log('preview fail')
 				// 	}
 				// });
+			},
+			handleInput() {
+				if (!this.searchText) {
+					this.$emit('search', 'none')
+				}
 			}
 		}
 	}

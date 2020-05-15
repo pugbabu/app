@@ -6,7 +6,7 @@
 		</cu-custom>
 		<view class="knowledge">
 			<tu-zhi v-if="pageUrl == 'tuzhi'" :list="drawList"></tu-zhi>
-			<document-comp v-else :list="documentList"></document-comp>
+			<document-comp v-else :list="documentList" @search="documentSearch"></document-comp>
 			<!-- <video-comp v-else-if="pageUrl == 'shipin'"></video-comp> -->
 			<!-- <tabbar-upload v-else></tabbar-upload> -->
 			<view class="cu-bar tabbar bg-white shadow foot">
@@ -46,7 +46,8 @@
 	            src: '',
 				pageUrl: 'tuzhi',
 				documentList: [],
-				drawList: []
+				drawList: [],
+				type: '2'
 	        }
 	    },
 		components: {
@@ -57,23 +58,44 @@
 			DocumentComp
 		},
 		created() {
-			this.getFiles('2')
+			this.getFiles(this.type)
 		},
 	    methods: {
 	      NavChange(e) {
 			this.pageUrl = e.currentTarget.dataset.cur
-			let type = e.currentTarget.dataset.type
-			console.log(type)
+			this.type = e.currentTarget.dataset.type
 			this.getFiles(type)
 	      },
-		  getFiles(type) {
+		  documentSearch(title) {
+			  if (!title) {
+				  uni.showToast({
+				  	icon: 'none',
+					title: '请输入文档名称'
+				  })
+				  return;
+			  } else if (title == 'none') {
+				  this.getFiles(this.type)
+				  return
+			  }
+			  this.getFiles(this.type, title)
+		  },
+		  getFiles(type, title) {
 			  console.log('get files ')
+			  let data
+			  if (title) {
+				  data = {
+					  type,
+					  title
+				  }
+			  } else {
+				  data= {
+					  type
+				  }
+			  }
 		  	let _this = this
 		  	uni.request({
 		  		url: 'http://192.168.196.254:3000/file/list',
-		  		data : {
-		  			type: type
-		  		},
+		  		data : data,
 		  		success: (result) => {
 		  			console.log(result, 'fileresult')
 		  			if (result.data.code == 200) {
