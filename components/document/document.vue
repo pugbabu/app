@@ -152,9 +152,12 @@
 				// });
 			},
 			handleInput() {
-				if (!this.searchText) {
-					this.getFiles()
-				}
+				setTimeout(() => {
+					if (!this.searchText) {
+						this.getFiles()
+					}
+				})
+				
 			}
 		}
 	}
