@@ -94,7 +94,7 @@
 		},
 		created() {
 			console.log('crated')
-			this.getFiles()
+			// this.getFiles()
 		},
 		methods: {
 			tabChange(index) {

@@ -77,6 +77,10 @@
 							})
 							return
 						} else {
+							uni.setStorage({
+								key: 'token',
+								data: 'token'
+							})
 							uni.navigateTo({
 								url: '/pages/home/index'
 							})

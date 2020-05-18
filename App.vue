@@ -1,7 +1,17 @@
 <script>
 	import Vue from 'vue'
+	import { mapMutations } from 'vuex'
 	export default {
+		methods: {
+			...mapMutations['login']
+		},
 		onLaunch: function() {
+			let userInfo = uni.getStorage({
+				key: 'userInfo',
+				success: function (res) {
+					console.log(res.data);
+				}
+			})
 			// #ifdef APP-PLUS  
 			console.log(plus.runtime.appid, 'plus.runtime.appid')
 			plus.runtime.getProperty(plus.runtime.appid, function(widgetInfo) {

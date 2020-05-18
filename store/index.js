@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import request from '../common/utils/request.js'
 Vue.use(Vuex)
 const store = new Vuex.Store({
 	state: {
@@ -7,6 +8,9 @@ const store = new Vuex.Store({
 		isLoading:true,
 		bannerDotColor:"#888888",
 		bannerDotActiveColor:"#888888",
+		userName: '', // 用户名
+		userId: '', // 用户id
+		token: '', // 登录后的token
 	},
 	mutations: {
 		SET_ARTICLES(state,list){
@@ -27,6 +31,23 @@ const store = new Vuex.Store({
 		},
 		hideLoading(state){
 			state.isLoading = false;
+		},
+		login(state, user) {
+			state.userName = user.userName || ''
+			state.userId = user.userId || ''
+			state.token = user.token || ''
+			uni.setStorage({
+				key: 'userInfo',
+				data: user
+			})
+		},
+		logout(state) {
+			state.userName = ''
+			state.userId = ''
+			state.token = ''
+			uni.removeStorage({
+				key: 'userInfo'
+			})
 		}
 	},
 	actions: {
@@ -76,6 +97,14 @@ const store = new Vuex.Store({
 			});
 			uni.hideLoading();
 			return result;
+		},
+		async getFiles(ctx, options) {
+			uni.showLoading({
+			    title: '加载中',
+			});
+			let result = await request(options)
+			uni.hideLoading()
+			return result
 		}
 	}
 })

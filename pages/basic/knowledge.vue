@@ -58,6 +58,14 @@
 			DocumentComp
 		},
 		created() {
+			this.$store.dispatch('getFiles', {
+				url: '/file/list',
+				data: {
+					type: '1'
+				}
+			}).then(res => {
+				console.log(res, 'getFiles')
+			})
 			// this.getFiles(this.type)
 		},
 	    methods: {
