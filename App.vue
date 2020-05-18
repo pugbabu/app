@@ -6,10 +6,15 @@
 			...mapMutations['login']
 		},
 		onLaunch: function() {
-			let userInfo = uni.getStorage({
-				key: 'userInfo',
+			uni.getStorage({
+				key: 'token',
 				success: function (res) {
-					console.log(res.data);
+					console.log(res.data)
+					if (!res.data) {
+						uni.navigateTo({
+							url: '/pages/login/login'
+						})
+					} 
 				}
 			})
 			// #ifdef APP-PLUS  

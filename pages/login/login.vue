@@ -234,7 +234,7 @@
 	transform: translateY(-50%);
 }
 .connot-tip{
-	font-size: 12px;
+	font-size: 24upx;
 	position: absolute;
 	bottom: -60px;
 	line-height: 20px;
