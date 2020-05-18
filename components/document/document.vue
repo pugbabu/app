@@ -1,34 +1,38 @@
 <template>
 	<view class="document-wrapper">
-		<view class="cu-bar bg-white search">
-			<view class="search-form round">
-				<text class="cuIcon-search"></text>
-				<input @input="handleInput" v-model="searchText" type="text" placeholder="请输入文档名称" confirm-type="search"></input>
-			</view>
-			<view class="action">
-				<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
-			</view>
-		</view>
-		<view v-if="!list.length && hasLoaded">
-			<no-data text="暂无文档"></no-data>
-		</view>
+		<easy-skeleton SkelttionType="prouct" v-if="hasSkelettion"></easy-skeleton>
 		<view v-else>
-			<view class="tuzhi-list">
-				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
-				 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
-					<view class="cu-item  padding margin-bottom-sm" v-for="(item, index) in list" :key="index" @tap="previewDoc(item.title, item.filePath)">
-						<view class="content">
-							<text class="cuIcon-file text-green margin-right-sm" style="font-size: 44upx;"></text>
-							<text class="text-grey">{{item.title}}</text>
-						</view>
-					</view>
-					<!-- <view class="tuzhi-item" v-for="(item, index) in documentList" :key="index">
-						<view class="tuzhi-title" @tap="previewDoc(item.filePath)">{{item.title}}</view>
-					</view> -->
-				</scroll-view>
+			<view class="cu-bar bg-white search">
+				<view class="search-form round">
+					<text class="cuIcon-search"></text>
+					<input @input="handleInput" v-model="searchText" type="text" placeholder="请输入文档名称" confirm-type="search"></input>
+				</view>
+				<view class="action">
+					<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
+				</view>
 			</view>
-			<image v-show="old.scrollTop > 300" @tap="goTop" class="link-top" src="../../static/knowledge/top.png"></image>
+			<view v-if="!list.length && hasLoaded">
+				<no-data text="暂无文档"></no-data>
+			</view>
+			<view v-else>
+				<view class="tuzhi-list">
+					<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
+					 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
+						<view class="cu-item  padding margin-bottom-sm" v-for="(item, index) in list" :key="index" @tap="previewDoc(item.title, item.filePath)">
+							<view class="content">
+								<text class="cuIcon-file text-green margin-right-sm" style="font-size: 44upx;"></text>
+								<text class="text-grey">{{item.title}}</text>
+							</view>
+						</view>
+						<!-- <view class="tuzhi-item" v-for="(item, index) in documentList" :key="index">
+							<view class="tuzhi-title" @tap="previewDoc(item.filePath)">{{item.title}}</view>
+						</view> -->
+					</scroll-view>
+				</view>
+				<image v-show="old.scrollTop > 300" @tap="goTop" class="link-top" src="../../static/knowledge/top.png"></image>
+			</view>
 		</view>
+		
 		
 
 	</view>
@@ -36,6 +40,7 @@
 
 <script>
 	import NoData from '@/components/no-data/no-data.vue';
+	import { mapState } from 'vuex'
 	// #ifdef APP-PLUS  
 	const office = uni.requireNativePlugin('Jiang-OfficeView');
 	console.log(office, 'office')
@@ -45,7 +50,6 @@
 			type: {
 				type: String,
 				default: '',
-				hasLoaded: false
 			}
 		},
 		data() {
@@ -59,11 +63,15 @@
 					filePath: 'http://192.168.196.254:3000/assets/docs/resume.pdf'
 				}],
 				searchText: '',
-				list: []
+				list: [],
+				hasLoaded: false
 			}
 		},
 		components: {
 			NoData
+		},
+		computed: {
+			...mapState(['hasSkelettion'])
 		},
 		created() {
 			this.getFiles()
@@ -88,7 +96,6 @@
 				});
 			},
 			getFiles(title) {
-				console.log('get files ')
 				let data
 				if (title) {
 					data = {
@@ -100,20 +107,13 @@
 						type: this.type
 					}
 				}
-				let _this = this
-				uni.request({
-					url: 'http://192.168.196.254:3000/file/list',
-					data: data,
-					success: (result) => {
-						console.log(result, 'fileresult')
-						if (result.data.code == 200) {
-							_this.list = result.data.data.files || []
-							_this.hasLoaded = true
-						}
-					},
-					fail() {
-						console.log('faile get file')
-					}
+				this.$store.dispatch('getFiles', {
+					url: '/file/list',
+					data: data
+				}).then(res => {
+					console.log(res, 'getFiles')
+					this.list = res.data.files || []
+					this.hasLoaded = true
 				})
 			},
 			previewDoc(title, filePath) {

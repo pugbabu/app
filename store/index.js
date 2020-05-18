@@ -11,6 +11,7 @@ const store = new Vuex.Store({
 		userName: '', // 用户名
 		userId: '', // 用户id
 		token: '', // 登录后的token
+		hasSkelettion: false, // 展示骨架屏
 	},
 	mutations: {
 		SET_ARTICLES(state,list){
@@ -48,6 +49,10 @@ const store = new Vuex.Store({
 			uni.removeStorage({
 				key: 'userInfo'
 			})
+		},
+		setSkelettion(state, param) {
+			console.log(param)
+			state.hasSkelettion = param
 		}
 	},
 	actions: {

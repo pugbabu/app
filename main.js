@@ -6,8 +6,10 @@ import binerStore from '@/components/biner-store/biner-store' // 本地存储
 /*           注册全局自定义组件            */
 import cuCustom from './colorui/components/cu-custom.vue'
 import culoading from "@/components/loading/loading.vue";
+import easySkeleton from '@/components/skeleton/skeleton.vue'
 Vue.component('cu-custom',cuCustom)
 Vue.component('cu-loading',culoading)
+Vue.component('easy-skeleton',easySkeleton)
 
 Vue.prototype.$store = store;
 Vue.prototype.$storage = binerStore; // 本地存储

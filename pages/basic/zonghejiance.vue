@@ -4,28 +4,31 @@
 			<block slot="backText">返回</block>
 			<block slot="content">综合监测</block>
 		</cu-custom>
-		<!-- <view v-if="isLoading">的是非得失</view> -->
-		<cu-loading v-if="isLoading"></cu-loading>
-		<view class="report-wrapper">
-			<view class="qiun-columns">
-				<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
-					<view class="qiun-title-dot-light">报警等级</view>
+		<easy-skeleton SkelttionType="prouct" v-show="hasSkelettion"></easy-skeleton>
+		<view v-show="!hasSkelettion">
+			<view class="report-wrapper">
+				<view class="qiun-columns">
+					<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+						<view class="qiun-title-dot-light">报警等级</view>
+					</view>
+					<view class="qiun-charts"><canvas canvas-id="canvasRing" id="canvasRing" class="charts" @touchstart="touchRing"></canvas></view>
 				</view>
-				<view class="qiun-charts"><canvas canvas-id="canvasRing" id="canvasRing" class="charts" @touchstart="touchRing"></canvas></view>
-			</view>
-			<view class="qiun-columns">
-				<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
-					<view class="qiun-title-dot-light">1号线设备故障比例</view>
+				<view class="qiun-columns">
+					<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+						<view class="qiun-title-dot-light">1号线设备故障比例</view>
+					</view>
+					<view class="qiun-charts"><canvas canvas-id="canvasPie" id="canvasPie" class="charts" @touchstart="touchPie"></canvas></view>
 				</view>
-				<view class="qiun-charts"><canvas canvas-id="canvasPie" id="canvasPie" class="charts" @touchstart="touchPie"></canvas></view>
-			</view>
-			<view class="qiun-columns">
-				<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
-					<view class="qiun-title-dot-light">历年ATS与CC故障</view>
+				<view class="qiun-columns">
+					<view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+						<view class="qiun-title-dot-light">历年ATS与CC故障</view>
+					</view>
+					<view class="qiun-charts"><canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" @touchstart="touchColumn"></canvas></view>
 				</view>
-				<view class="qiun-charts"><canvas canvas-id="canvasColumn" id="canvasColumn" class="charts" @touchstart="touchColumn"></canvas></view>
 			</view>
 		</view>
+	
+		
 	</view>
 
 </template>
@@ -44,6 +47,7 @@
 		},
 		data() {
 			return {
+				hasSkelettion: true,
 				canvasRing: null,
 				canvasPie: null,
 				canvasColumn: null,
@@ -118,7 +122,10 @@
 			_self = this;
 			this.cWidth = uni.upx2px(750);
 			this.cHeight = uni.upx2px(500);
-			this.init();
+			setTimeout(() => {
+				this.hasSkelettion = false
+				this.init();
+			}, 1000)
 			// this.getServerData();
 		},
 		methods: {
@@ -126,9 +133,9 @@
 				this.showPie('canvasPie', this.pieData);
 				this.showColumn('canvasColumn', this.columnData);
 				this.showRing('canvasRing', this.ringData);
-				setTimeout(() => {
-					this.$store.commit('hideLoading')
-				}, 1000)
+				// setTimeout(() => {
+				// 	this.$store.commit('hideLoading')
+				// }, 1000)
 			},
 			showRing(canvasId, chartData) {
 				this.canvaRing = new uCharts({

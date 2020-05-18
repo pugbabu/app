@@ -4,7 +4,8 @@
 			<block slot="backText">返回</block>
 			<block slot="content">工班检修任务</block>
 		</cu-custom>
-		<view class="shift-wrapper">
+		<easy-skeleton SkelttionType="prouct" v-if="hasSkelettion"></easy-skeleton>
+		<view class="shift-wrapper" v-else>
 			<view class="shift-content">
 				<view class="shift-item" v-for="item in shifts" :key="item.id">
 					<view class="shit-item-name">{{item.name}}</view>
@@ -138,8 +139,14 @@
 						date: '2019-06-26',
 						icon: ''
 					}
-				]
+				],
+				hasSkelettion: true
 			}
+		},
+		onReady() {
+			setTimeout(() => {
+				this.hasSkelettion = false
+			}, 1000)
 		},
 		methods: {
 			getTask() {

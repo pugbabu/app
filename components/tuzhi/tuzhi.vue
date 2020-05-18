@@ -1,35 +1,34 @@
 <template>
 	<view class="tuzhi-wrapper">
-		<view class="cu-bar bg-white search">
-			<view class="search-form round">
-				<text class="cuIcon-search"></text>
-				<input @input="handleInput" v-model="searchText" type="text" placeholder="请输入图纸名称" confirm-type="search"></input>
-			</view>
-			<view class="action">
-				<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
-			</view>
-		</view>
-		<!-- <nav-bar :navs="navs" @tabChange="tabChange"></nav-bar> -->
-		<view class="tuzhi-list">
-			<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
-			 @scroll="scroll">
-				<view class="tuzhi-item" v-for="(item, index) in list" :key="index">
-					<view class="tuzhi-title">{{item.title}}</view>
-					<image :lazy-load="true" :src="item.filePath" @click="preImg(item.filePath)"></image>
+		<easy-skeleton SkelttionType="prouct" v-if="hasSkelettion"></easy-skeleton>
+		<view v-else>
+			<view class="cu-bar bg-white search">
+				<view class="search-form round">
+					<text class="cuIcon-search"></text>
+					<input @input="handleInput" v-model="searchText" type="text" placeholder="请输入图纸名称" confirm-type="search"></input>
 				</view>
-			</scroll-view>
-		</view>
-		<image v-show="old.scrollTop > 300" @tap="goTop" class="link-top" src="../../static/knowledge/top.png"></image>
-		<!-- <view class="tuzhi-list">
-			<view class="tuzhi-item" v-for="(item, index) in list" :key="index">
-				<view class="tuzhi-title">{{item.title}}</view>
-				<image :src="item.image" @tap="toDetail(item.image)"></image>
+				<view class="action">
+					<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
+				</view>
 			</view>
-		</view> -->
+			<!-- <nav-bar :navs="navs" @tabChange="tabChange"></nav-bar> -->
+			<view class="tuzhi-list">
+				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
+				 @scroll="scroll">
+					<view class="tuzhi-item" v-for="(item, index) in list" :key="index">
+						<view class="tuzhi-title">{{item.title}}</view>
+						<image :lazy-load="true" :src="item.filePath" @click="preImg(item.filePath)"></image>
+					</view>
+				</scroll-view>
+			</view>
+			<image v-show="old.scrollTop > 300" @tap="goTop" class="link-top" src="../../static/knowledge/top.png"></image>
+		</view>
+		
 	</view>
 </template>
 <script>
 	import NavBar from '../nav/nav.vue'
+	import { mapState } from 'vuex'
 	export default {
 		props:{
 			type: {
@@ -60,26 +59,7 @@
 						name: '综合监控'
 					}
 				],
-				list: [{
-						title: '电路平面布置图',
-						image: '../../static/dianlu.png'
-					},
-					{
-						title: '灯丝报警电路及配线',
-						image: '../../static/dianlu.png'
-					},
-					{
-						title: '电源屏配线图',
-						image: '../../static/dianlu.png'
-					},
-					{
-						title: '电源屏配线图',
-						image: '../../static/dianlu.png'
-					},
-					{
-						title: '电源屏配线图',
-						image: '../../static/dianlu.png'
-					}
+				list: [
 				],
 				scrollTop: 0,
 				old: {
@@ -92,9 +72,17 @@
 		components: {
 			NavBar
 		},
+		computed: {
+			...mapState(['hasSkelettion'])
+		},
+		watch: {
+			hasSkelettion(val) {
+				console.log(val, 'hasSkelettion')
+			}
+		},
 		created() {
 			console.log('crated')
-			// this.getFiles()
+			this.getFiles()
 		},
 		methods: {
 			tabChange(index) {
@@ -132,7 +120,6 @@
 				
 			},
 			getFiles(title) {
-				console.log('get files ')
 				let data
 				if (title) {
 					data = {
@@ -144,20 +131,12 @@
 						type: this.type
 					}
 				}
-				let _this = this
-				uni.request({
-					url: 'http://192.168.196.254:3000/file/list',
-					data: data,
-					success: (result) => {
-						console.log(result, 'fileresult')
-						if (result.data.code == 200) {
-							_this.list = result.data.data.files || []
-							_this.hasLoaded = true
-						}
-					},
-					fail() {
-						console.log('faile get file')
-					}
+				this.$store.dispatch('getFiles', {
+					url: '/file/list',
+					data: data
+				}).then(res => {
+					console.log(res, 'getFiles')
+					this.list = res.data.files || []
 				})
 			},
 			preImg(image) {
