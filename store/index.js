@@ -104,11 +104,7 @@ const store = new Vuex.Store({
 			return result;
 		},
 		async getFiles(ctx, options) {
-			uni.showLoading({
-			    title: '加载中',
-			});
 			let result = await request(options)
-			uni.hideLoading()
 			return result
 		}
 	}

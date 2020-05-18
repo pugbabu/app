@@ -125,7 +125,7 @@
 			setTimeout(() => {
 				this.hasSkelettion = false
 				this.init();
-			}, 1000)
+			}, 500)
 			// this.getServerData();
 		},
 		methods: {

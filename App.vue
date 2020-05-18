@@ -16,6 +16,10 @@
 			console.log(plus.runtime.appid, 'plus.runtime.appid')
 			plus.runtime.getProperty(plus.runtime.appid, function(widgetInfo) {
 				console.log(widgetInfo, 'widgetInfo')
+				uni.setStorage({
+					key: 'widgetInfo',
+					data: widgetInfo
+				})
 				console.log(uni)
 				uni.request({
 					url: 'http://192.168.196.254:3000/pkg/update',

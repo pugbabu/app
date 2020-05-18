@@ -1,7 +1,7 @@
 <template>
 	<view class="tuzhi-wrapper">
-		<easy-skeleton SkelttionType="prouct" v-if="hasSkelettion"></easy-skeleton>
-		<view v-else>
+		<easy-skeleton SkelttionType="prouct" v-show="hasSkelettion"></easy-skeleton>
+		<view v-show="!hasSkelettion">
 			<view class="cu-bar bg-white search">
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>

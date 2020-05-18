@@ -1,64 +1,62 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-gradual-blue" :isManual="true" :isBack="true" @back="handleBack">
+		<cu-custom bgColor="bg-gradual-blue" :isBack="true" :isManual="true" @back="handleBack">
 			<block slot="backText">返回</block>
 			<block slot="content">转辙机维修</block>
 			<block slot="right">
 				<view class="action" @tap="scanCode">
 					<text style="font-size: 40upx;" class="lg text-white cuIcon-scan"></text>
-					<!-- <view class="cu-load load-cuIcon"></view> -->
 				</view>
 			</block>
 		</cu-custom>
-		<!-- 轮播图 -->
-		<swiper class="screen-swiper" :class="dotStyle?'square-dot':'round-dot'" :indicator-dots="true" :circular="true"
-		 :autoplay="true" interval="5000" duration="500" :indicator-color="bannerDotColor" :indicator-active-color="bannerDotActiveColor">
-			<swiper-item v-for="(item,index) in colorList" :key="index"@tap="handleTap(item.title)" >
-				<!-- <image :src="item.url" mode="aspectFill" v-if="item.type=='image'"></image> -->
-				 <view  class="padding radius text-center shadow-blur banner-bg" :class="'bg-' + item.name">
-					<view class="text-lg">{{item.title}}</view>
-					<!-- <view class="margin-top-sm text-Abc">{{item.name}}</view> -->
-				 </view>
-			</swiper-item>
-		</swiper>
-		<!-- 列表 -->
-		<view class="cu-bar bg-white solid-bottom">
-			<view class="action">
-				<text class="cuIcon-titles text-orange"></text> 任务清单
+		<easy-skeleton SkelttionType="prouct" v-show="hasSkelettion"></easy-skeleton>
+		<view v-show="!hasSkelettion">
+			<!-- 轮播图 -->
+			<swiper class="screen-swiper" :class="dotStyle?'square-dot':'round-dot'" :indicator-dots="true" :circular="true"
+			 :autoplay="true" interval="5000" duration="500" :indicator-color="bannerDotColor" :indicator-active-color="bannerDotActiveColor">
+				<swiper-item v-for="(item,index) in colorList" :key="index"@tap="handleTap(item.title)" >
+					<!-- <image :src="item.url" mode="aspectFill" v-if="item.type=='image'"></image> -->
+					 <view  class="padding radius text-center shadow-blur banner-bg" :class="'bg-' + item.name">
+						<view class="text-lg">{{item.title}}</view>
+						<!-- <view class="margin-top-sm text-Abc">{{item.name}}</view> -->
+					 </view>
+				</swiper-item>
+			</swiper>
+			<!-- 列表 -->
+			<view class="cu-bar bg-white solid-bottom">
+				<view class="action">
+					<text class="cuIcon-titles text-orange"></text> 任务清单
+				</view>
 			</view>
-		</view>
-		<view class="cu-card case">
-			<view class="cu-item shadow" v-for="item in machineList" :key="item.id" @tap="showModal" :data-id="item.id" :data-step="item.step" :data-status="item.status">
-				<!-- <view class="image">
-					<image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"
-					 mode="widthFix"></image>
-					<view class="cu-tag bg-red" v-if="item.step != 4">继续</view>
-				</view> -->
-				<view class="cu-list menu-avatar">
-					<view class="cu-item">
-						<view class="cu-tag bg-red continue-tag" v-if="item.step != 4">继续</view>
-						<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
-						<view class="content flex-sub">
-							<view class="text-grey">{{item.name}}</view>
-							<view class="text-gray text-sm flex justify-between">
-								<view class="flex margin-top" style="flex: 1;">
-									<view class="cu-progress round xs">
-										<view class="bg-green" :style="[{ width:loading?calcRate(item.step)+'%':''}]"></view>
+			<view class="cu-card case">
+				<view class="cu-item shadow" v-for="item in machineList" :key="item.id" @tap="showModal" :data-id="item.id" :data-step="item.step" :data-status="item.status">
+					<view class="cu-list menu-avatar">
+						<view class="cu-item">
+							<view class="cu-tag bg-red continue-tag" v-if="item.step != 4">继续</view>
+							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
+							<view class="content flex-sub">
+								<view class="text-grey">{{item.name}}</view>
+								<view class="text-gray text-sm flex justify-between">
+									<view class="flex margin-top" style="flex: 1;">
+										<view class="cu-progress round xs">
+											<view class="bg-green" :style="[{ width:loading?calcRate(item.step)+'%':''}]"></view>
+										</view>
+										<text class="cuIcon-roundcheckfill text-green margin-left-sm" v-if="item.step == 4"></text>
+										<text class="margin-left" v-else>{{calcRate(item.step)}}%</text>
 									</view>
-									<text class="cuIcon-roundcheckfill text-green margin-left-sm" v-if="item.step == 4"></text>
-									<text class="margin-left" v-else>{{calcRate(item.step)}}%</text>
+									<!-- <view class="text-gray text-sm">
+										<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
+										<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
+										<text class="cuIcon-messagefill margin-lr-xs"></text> 30
+									</view> -->
 								</view>
-								<!-- <view class="text-gray text-sm">
-									<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
-									<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
-									<text class="cuIcon-messagefill margin-lr-xs"></text> 30
-								</view> -->
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
+		
 		<view class="cu-modal" :class="modalName=='dialogModal'?'show':''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
@@ -185,7 +183,8 @@
 						status: 'unfinished',
 					}
 				],
-				modalName: ''
+				modalName: '',
+				hasSkelettion: true
 			}
 		},
 		onShow() {
@@ -196,6 +195,7 @@
 			let that = this;
 			setTimeout(function() {
 				that.loading = true
+				that.hasSkelettion = false
 			}, 500)
 		},
 		methods: {
@@ -271,7 +271,8 @@
 			},
 			handleBack() {
 				uni.navigateTo({
-					url:'/pages/home/index'
+					url:'/pages/home/index',
+					animationType: 'slide-in-left',
 				})
 			}
 		}

@@ -146,7 +146,7 @@
 		onReady() {
 			setTimeout(() => {
 				this.hasSkelettion = false
-			}, 1000)
+			}, 500)
 		},
 		methods: {
 			getTask() {

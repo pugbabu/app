@@ -33,7 +33,7 @@
 					<image src="../../static/my/mima.png"></image>
 					<view class="mine-text">修改密码</view>
 				</view>
-				<view class="mine-item">
+				<view class="mine-item" @tap="showVersion">
 					<image src="../../static/my/banben.png"></image>
 					<view class="mine-text">版本信息</view>
 				</view>
@@ -66,6 +66,28 @@
 						}
 					}
 				})
+			},
+			showVersion() {
+				let version = ''
+				uni.getStorage({
+					key: 'widgetInfo',
+					success: function(res) {
+						console.log(res)
+						version = res.data.version
+						uni.showModal({
+						    title: '',
+						    content: `当前版本是${version}`,
+							showCancel: false,
+						    success: function (res) {
+						        if (res.confirm) {
+						            console.log('用户点击确定');
+						        }
+						    }
+						});
+						
+					}
+				})
+		
 			}
 		}
 	}

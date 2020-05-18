@@ -4,7 +4,8 @@
 			<block slot="backText">返回</block>
 			<block slot="content">故障登记</block>
 		</cu-custom>
-		<view class="new-trouble">
+		<easy-skeleton SkelttionType="prouct" v-show="hasSkelettion"></easy-skeleton>
+		<view class="new-trouble" v-show="!hasSkelettion">
 			<view class="register-content">
 				<form>
 					<view class="trouble-item trouble-item-name">
@@ -83,11 +84,17 @@
 				 troubleLevel: '',
 				 lineStation: '',
 				 deviceName: '',
-				 troubleText: ''
+				 troubleText: '',
+				 hasSkelettion: true
 			}
 		},
 		components: {
 			ssUploadImage
+		},
+		onReady() {
+			setTimeout(() => {
+				this.hasSkelettion = false
+			}, 500)
 		},
 		methods: {
 			onSuccess(res) {

@@ -4,7 +4,8 @@
 			<block slot="backText">返回</block>
 			<block slot="content">电子报班</block>
 		</cu-custom>
-		<view class="electronic">
+		<easy-skeleton SkelttionType="prouct" v-show="hasSkelettion"></easy-skeleton>
+		<view class="electronic"  v-show="!hasSkelettion">
 			<view class="electronic-head"></view>
 			<view class="electronic-content">
 				<form>
@@ -55,8 +56,13 @@
 	export default {
 		data() {
 			return {
-
+				hasSkelettion: true
 			}
+		},
+		onReady() {
+			setTimeout(() => {
+				this.hasSkelettion = false
+			}, 500)
 		},
 		methods: {
 			submit() {

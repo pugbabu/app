@@ -1,5 +1,8 @@
-import { requestURL } from '../config/index.js'
+import {
+	requestURL
+} from '../config/index.js'
 import store from '../../store/index.js'
+
 function Request(options) {
 	store.commit('setSkelettion', true)
 	options.url = requestURL + options.url;
@@ -26,8 +29,11 @@ function Request(options) {
 		uni.request({
 			...options,
 			success: res => {
-				store.commit('setSkelettion', false)
-				resolve(res.data)
+				setTimeout(() => {
+					store.commit('setSkelettion', false)
+					resolve(res.data)
+				}, 300)
+
 			},
 			fail: (error) => {
 				console.log(error)
