@@ -14,7 +14,7 @@
 			<!-- 轮播图 -->
 			<swiper class="screen-swiper" :class="dotStyle?'square-dot':'round-dot'" :indicator-dots="true" :circular="true"
 			 :autoplay="true" interval="5000" duration="500" :indicator-color="bannerDotColor" :indicator-active-color="bannerDotActiveColor">
-				<swiper-item v-for="(item,index) in colorList" :key="index"@tap="handleTap(item.title)" >
+				<swiper-item v-for="(item,index) in colorList" :key="index"  @tap="handleTap(item.title)" >
 					<!-- <image :src="item.url" mode="aspectFill" v-if="item.type=='image'"></image> -->
 					 <view  class="padding radius text-center shadow-blur banner-bg" :class="'bg-' + item.name">
 						<view class="text-lg">{{item.title}}</view>
@@ -79,6 +79,12 @@
 		</view>
 		<view class="cu-modal" :class="modalName=='Image'?'show':''">
 			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">检修前注意事项</view>
+					<view class="action" @tap="hideModal">
+						<text class="cuIcon-close text-red"></text>
+					</view>
+				</view>
 				<view class="bg-img" style="height:200px;overflow: auto;">
 					<view class="text-lg text-left text-content padding-sm">1、检查联络工具良好，维修工具齐全</view>
 					<view class="text-lg text-left text-content padding-sm">2、安全防护用品穿戴齐全</view>
@@ -100,13 +106,16 @@
 						<text class="cuIcon-close text-red"></text>
 					</view>
 				</view>
-				<view class="padding-xl">
-					是否是xx号转辙机？
+				<view class="padding-xl" v-if="!isInRepairList">
+					该设备不在您的维修列表中，请确认设备
 				</view>
-				<view class="cu-bar bg-white justify-end">
+				<view class="padding-xl" v-else>
+					是否开始该设备的检修？
+				</view>
+				<view class="cu-bar bg-white justify-end" v-if="isInRepairList">
 					<view class="action">
 						<button class="cu-btn line-green text-green" @tap="hideModal">否</button>
-						<button class="cu-btn bg-green margin-left" @tap="hideModal">是，开始检修</button>
+						<button class="cu-btn bg-green margin-left" @tap="startRepair">是，开始检修</button>
 		
 					</view>
 				</view>
@@ -119,6 +128,8 @@
 	import {
 		mapState
 	} from "vuex";
+	import stationImage from '../../static/dianlu.png'
+	console.log(stationImage)
 	export default {
 		computed: { 
 			...mapState({
@@ -184,7 +195,10 @@
 					}
 				],
 				modalName: '',
-				hasSkelettion: true
+				hasSkelettion: true,
+				scanMachineId: '',
+				isInRepairList: false,
+				scanResult: null
 			}
 		},
 		onShow() {
@@ -249,16 +263,19 @@
 				}
 			},
 			scanCode() {
+				let that = this
 				uni.scanCode({
 				    success: function (res) {
-						uni.showToast({
-							title: res.result,
-							icon: 'none',
-							duration: 1000
+						that.scanMachineId = res.result
+						that.scanResult = that.machineList.find(val => {
+							return  val.id == this.scanMachineId
 						})
-						this.modalName = 'scanCode'
-				        // console.log('条码类型：' + res.scanType);
-				        // console.log('条码内容：' + res.result);
+						if (!that.scanResult) {
+							that.isInRepairList = false
+						} else {
+							that.isInRepairList = true
+						}
+						that.modalName = 'scanCode'
 				    }
 				});
 			},
@@ -267,12 +284,23 @@
 					this.modalName = 'Image'
 				} else {
 					this.modalName = ''
+					setTimeout(() => {
+						uni.previewImage({
+							current: 0,
+							urls: [stationImage]
+						})
+					}, 150)
 				}
 			},
 			handleBack() {
 				uni.navigateTo({
 					url:'/pages/home/index',
 					animationType: 'slide-in-left',
+				})
+			},
+			startRepair() {
+				uni.navigateTo({
+					url: `/pages/basic/switch-process/index?step=${this.scanResult.step}&id=${this.scanResult.id}`
 				})
 			}
 		}

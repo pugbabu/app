@@ -1,22 +1,28 @@
 <script>
 	import Vue from 'vue'
-	import { mapMutations } from 'vuex'
+	import {
+		mapMutations
+	} from 'vuex'
 	export default {
 		methods: {
 			...mapMutations['login']
 		},
 		onLaunch: function() {
+			// 通过token缓存，判断用户是否登录，token不存在，跳转登录页面
 			uni.getStorage({
 				key: 'token',
-				success: function (res) {
+				success: function(res) {
 					console.log(res.data)
 					if (!res.data) {
 						uni.navigateTo({
 							url: '/pages/login/login'
 						})
-					} 
+					}
 				}
 			})
+			/**
+			 * @description APP更新，热更新和整包更新
+			 */
 			// #ifdef APP-PLUS  
 			console.log(plus.runtime.appid, 'plus.runtime.appid')
 			plus.runtime.getProperty(plus.runtime.appid, function(widgetInfo) {
@@ -42,9 +48,6 @@
 								success: function(res) {
 									if (res.confirm) {
 										console.log(data.wgtUrl)
-										uni.showLoading({
-											title: '更新中'
-										})
 										plus.nativeUI.showWaiting("下载wgt文件...");
 										plus.downloader.createDownload(data.wgtUrl, {
 											filename: "_doc/update/"
@@ -75,11 +78,42 @@
 								}
 							});
 
+						} else if (data.update && data.pkgUrl) {
+							uni.showModal({
+								title: '更新提示',
+								content: 'app版本有更新，是否更新',
+								success: function(res) {
+									if (res.confirm) {
+										plus.nativeUI.showWaiting("下载app更新包");
+										plus.runtime.openURL(data.pkgUrl);
+									} else if (res.cancel) {
+										console.log('用户点击取消');
+									}
+								}
+							})
 						}
 					}
 				});
 			});
 			// #endif
+
+			// #ifdef APP-PLUS  
+			// 页面加载时触发  
+			var pinf = plus.push.getClientInfo();
+			var cid = pinf.clientid; //客户端标识  
+			console.log(cid, 'cid')
+			const _self = this;
+			const _handlePush = function(message) {
+				// TODO  
+				console.log(message, 'push message')
+				let pagePath = JSON.parse(message.payload).pagePath
+				uni.navigateTo({  
+					url: pagePath
+				});
+			};
+			plus.push.addEventListener('click', _handlePush);
+			plus.push.addEventListener('receive', _handlePush);
+			// #endif  
 			uni.getSystemInfo({
 				success: function(e) {
 					// #ifndef MP

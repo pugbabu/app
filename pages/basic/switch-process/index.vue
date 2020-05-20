@@ -1,41 +1,42 @@
 <template>
 	<view>
-		<scroll-view scroll-y class="page">
-			<cu-custom bgColor="bg-gradual-blue" :isManual="true" :isBack="true" @back="handleBack">
-				<block slot="backText">返回</block>
-				<block slot="content">转辙机维修过程</block>
-			</cu-custom>
-			<scroll-view scroll-x class="bg-white padding response cu-steps steps-bottom" :scroll-into-view="'scroll-' + scroll"
-			 scroll-with-animation>
-				<view class="cu-item padding-lr-xl" :class="index>scroll?'':'text-green'" v-for="(item,index) in stepList" :key="index"
-				 :id="'scroll-' + index">
-					{{item.stepName}} <text class="num" :data-index="index + 1"></text>
-				</view>
-			</scroll-view>
-			<view class="cu-bar bg-white solid-bottom" style="margin-top: 20upx;">
-				<view class="action">
-					<text class="cuIcon-titles text-orange"></text> {{stepTitle}}
-				</view>
-			</view>
-
-			<!-- 检测步骤 -->
-			<!-- <block v-if="scroll == 0"> -->
-			<block v-for="(item, index) in currentList" :key="index">
-				<view class="cu-bar bg-white solid-bottom margin-top">
+		<view  class="page">
+			<view style="flex: auto;">
+				<cu-custom bgColor="bg-gradual-blue" :isManual="true" :isBack="true" @back="handleBack">
+					<block slot="backText">返回</block>
+					<block slot="content">转辙机维修过程</block>
+				</cu-custom>
+				<scroll-view scroll-x class="bg-white padding response cu-steps steps-bottom" :scroll-into-view="'scroll-' + scroll"
+				 scroll-with-animation>
+					<view class="cu-item padding-lr-xl" :class="index>scroll?'':'text-green'" v-for="(item,index) in stepList" :key="index"
+					 :id="'scroll-' + index">
+						{{item.stepName}} <text class="num" :data-index="index + 1"></text>
+					</view>
+				</scroll-view>
+				<view class="cu-bar bg-white solid-bottom" style="margin-top: 20upx;">
 					<view class="action">
-						<text class="cuIcon-title text-orange "></text> {{item.name}}
-						<text class="lg text-gray cuIcon-question" @tap="showDesc(item.desc)"></text>
+						<text class="cuIcon-titles text-green"></text><text class="text-green">{{stepTitle}}</text> 
 					</view>
-					<view class="action" v-if="item.display == 'switch'">
-						<switch :class="item.value?'checked':''" :checked="item.value" @change="switchChange($event, index)"></switch>
-					</view>
-				</view>
-				<view class="cu-form-group" v-if="item.display == 'input'">
-					<input placeholder="请填写检修后状态" name="input" v-model="item.value"></input>
 				</view>
 				
-			</block>
-			<!-- </block> -->
+				<!-- 检测步骤 -->
+				<block v-for="(item, index) in currentList" :key="index">
+					<view class="cu-bar bg-white solid-bottom margin-top">
+						<view class="action">
+							<text class="cuIcon-title text-orange "></text> {{item.name}}
+							<text class="lg text-gray cuIcon-question" @tap="showDesc(item.desc)"></text>
+						</view>
+						<view class="action" v-if="item.display == 'switch'">
+							<switch :class="item.value?'checked':''" :checked="item.value" @change="switchChange($event, index)"></switch>
+						</view>
+					</view>
+					<view class="cu-form-group" v-if="item.display == 'input'">
+						<input placeholder="请填写检修后状态" name="input" v-model="item.value"></input>
+					</view>
+					
+				</block>
+			</view>
+			
 
 
 
@@ -46,21 +47,22 @@
 				<button style="margin-left: 30upx;" class="cu-btn bg-red shadow" @tap="saveSteps">保存</button>
 			</view>
 
-			<!-- 详情弹窗 -->
-			<view class="cu-modal" :class="modalName=='Modal'?'show':''">
-				<view class="cu-dialog">
-					<view class="cu-bar bg-white justify-end">
-						<view class="content">详细描述</view>
-						<view class="action" @tap="hideModal">
-							<text class="cuIcon-close text-red"></text>
-						</view>
-					</view>
-					<view class="padding-xl">
-						{{desc}}
+			
+		</view>
+		<!-- 详情弹窗 -->
+		<view class="cu-modal" :class="modalName=='Modal'?'show':''">
+			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">详细描述</view>
+					<view class="action" @tap="hideModal">
+						<text class="cuIcon-close text-red"></text>
 					</view>
 				</view>
+				<view class="padding-xl">
+					{{desc}}
+				</view>
 			</view>
-		</scroll-view>
+		</view>
 	</view>
 </template>
 
@@ -310,32 +312,30 @@
 		},
 		methods: {
 			ScrollSteps(type) {
-				this._validateInput().then(flag => {
-					if (!flag) {
-						uni.showToast({
-							title:'填写内容不能为空',
-							icon: 'none',
-							duration: 1000
-						})
-						return
-					} else {
-						this._setStorage()
-						if (type == 'prev') {
-							this.scroll--
-						} else {
-							if (this.scroll == this.stepList.length - 1) {
-								uni.navigateTo({
-									url:'./result?id=' + this.id
-								})
-							} else {
-								this.scroll++
-							}
+				if (type == 'prev') {
+					this.scroll--
+					
+				} else {
+					this._setStorage()
+					this._validateInput().then(flag => {
+						if (!flag) {
+							uni.showToast({
+								title:'填写内容不能为空',
+								icon: 'none',
+								duration: 1000
+							})
+							return
 						}
+						if (this.scroll == this.stepList.length - 1) {
+							uni.navigateTo({
+								url:'./result?id=' + this.id
+							})
+						} else {
+							this.scroll++
+						}
+					})
 				
-					}
-				})
-				
-				
+				}
 			},
 			saveSteps() {
 				this._setStorage()
@@ -402,16 +402,22 @@
 <style>
 	.page {
 		height: 100vh;
+		display: flex;
+		flex-direction: column;
 		/* box-sizing: border-box;
 		padding-bottom: 150upx; */
 	}
 	.action-bottom {
-		position: fixed;
+		flex-shrink: 0;
+		padding: 30upx 0;
+		display: flex;
+		justify-content: center;
+		/* position: fixed;
 		bottom: 40upx;
 		left: 0;
 		right: 0;
 		text-align: center;
-		z-index: 99;
+		z-index: 99; */
 	}
 	.uni-input-placeholder{
 		color: grey;

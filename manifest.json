@@ -9,7 +9,8 @@
         /* 5+App特有相关 */
         "modules" : {
             "VideoPlayer" : {},
-            "Share" : {}
+            "Share" : {},
+            "Push" : {}
         },
         /* 模块配置 */
         "distribute" : {
@@ -45,7 +46,10 @@
             "ios" : {},
             /* ios打包配置 */
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "push" : {
+                    "unipush" : {}
+                }
             }
         },
         "nativePlugins" : {

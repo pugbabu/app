@@ -1,11 +1,11 @@
 <template>
 	<view>
 		<scroll-view scroll-y class="page">
-			<cu-custom bgColor="bg-gradual-blue" :isBack="true">
+			<cu-custom class="switch-result-custom" bgColor="bg-gradual-blue">
 				<block slot="backText"></block>
 				<block slot="content">转辙机维修结果记录</block>
 				<block slot="right">
-					<view class="action" @tap="scanCode">
+					<view class="action" @tap="toHome">
 						<text style="font-size: 40upx;" class="lg text-white cuIcon-homefill"></text>
 					</view>
 				</block>
@@ -39,8 +39,8 @@
 			
 			
 			<view class="action foot-button">
-				<button class="cu-btn bg-green shadow lg" @tap="toList">返回任务列表</button>
-				<button style="margin-left: 40upx;" class="cu-btn bg-green shadow lg" @tap="uploadData">上传数据</button>
+				<button class="cu-btn bg-grey shadow" @tap="prev">返回上一步</button>
+				<button style="margin-left: 40upx;" class="cu-btn bg-green shadow" @tap="uploadData">上传数据</button>
 			</view>
 		</scroll-view>
 	</view>
@@ -50,7 +50,8 @@
 	export default {
 		data() {
 			return {
-				resultData: {}
+				resultData: {},
+				id: ''
 			}
 		},
 		computed: {
@@ -58,8 +59,8 @@
 
 		},
 		onLoad(option) {
-			let id = option.id
-			let key = 'switch-task-' + id
+			this.id = option.id
+			let key = 'switch-task-' + this.id
 			this.resultData = this.$storage.getStorage(key)
 			console.log(this.resultData, 'result')
 		},
@@ -73,6 +74,16 @@
 				uni.showToast({
 					title:'上传数据中',
 					icon: 'none'
+				})
+			},
+			toHome() {
+				uni.navigateTo({
+					url: '/pages/home/index'
+				})
+			},
+			prev() {
+				uni.navigateTo({
+					url:'/pages/basic/switch-process/index?step=4&id=' + this.id
 				})
 			}
 		}
@@ -94,5 +105,8 @@
 	}
 	.result-item{
 		margin-bottom: 40upx;
+	}
+	.switch-result-custom /deep/.cu-bar{
+		justify-content: flex-end !important;
 	}
 </style>
