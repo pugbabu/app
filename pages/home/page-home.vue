@@ -107,7 +107,7 @@
 	.message{
 		position: absolute;
 		right: 50upx;
-		top: 60upx;
+		top: 90upx;
 	}
 	 .message image{
 		width: 48rpx;
