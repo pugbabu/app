@@ -1,7 +1,13 @@
 <template name="basics">
 	<view>
 		<scroll-view scroll-y class="page">
-			<image src="../../static/ditie.png" class="header-image"></image>
+			<view class="image-wrapper">
+				<image src="../../static/ditie.png" class="header-image"></image>
+				<view class="message" @tap="toMessage">
+					<image src="../../static/message.png"></image>
+					<view class="message-num">7</view>
+				</view>
+			</view>
 			<!-- <view class="header"></view> -->
 			<view class="nav-list">
 				<navigator hover-class="none" animation-type="pop-in" animationDuration="200" :url="'/pages/basic/' + item.url" class="nav-li" navigateTo :class="'bg-'+item.color"
@@ -68,6 +74,13 @@
 		},
 		onShow() {
 			console.log("success")
+		},
+		methods: {
+			toMessage() {
+				uni.navigateTo({
+					url: '/pages/message/message'
+				})
+			}
 		}
 	}
 </script>
@@ -87,5 +100,29 @@
 		background: url(../../static/ditie.png) no-repeat center;
 		background-size: 100% 100%;
 
+	}
+	.image-wrapper{
+		position: relative;
+	}
+	.message{
+		position: absolute;
+		right: 50upx;
+		top: 60upx;
+	}
+	 .message image{
+		width: 48rpx;
+		height: 48rpx;
+	}
+	 .message-num{
+		position: absolute;
+		right: -14rpx;
+		top: -10rpx;
+		width: 34rpx;
+		height: 34rpx;
+		line-height: 34rpx;
+		border-radius: 50%;
+		background: red;
+		color: #fff;
+		text-align: center;
 	}
 </style>

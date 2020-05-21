@@ -10,6 +10,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/message/message",
+			"style": {}
+		},
+		{
 			"path": "pages/basic/zonghejiance",
 			"style": {}
 		},
