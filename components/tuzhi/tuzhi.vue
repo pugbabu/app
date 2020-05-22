@@ -12,9 +12,12 @@
 				</view>
 			</view>
 			<!-- <nav-bar :navs="navs" @tabChange="tabChange"></nav-bar> -->
-			<view class="tuzhi-list">
-				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" @scrolltoupper="upper" @scrolltolower="lower"
-				 @scroll="scroll">
+			<view v-if="!list.length && hasLoaded">
+				<no-data text="暂无文档"></no-data>
+			</view>
+			<view class="tuzhi-list" v-else>
+				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
+				 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
 					<view class="tuzhi-item" v-for="(item, index) in list" :key="index">
 						<view class="tuzhi-title">{{item.title}}</view>
 						<image :lazy-load="true" :src="item.filePath" @click="preImg(item.filePath)"></image>
@@ -23,14 +26,17 @@
 			</view>
 			<image v-show="old.scrollTop > 300" @tap="goTop" class="link-top" src="../../static/knowledge/top.png"></image>
 		</view>
-		
+
 	</view>
 </template>
 <script>
 	import NavBar from '../nav/nav.vue'
-	import { mapState } from 'vuex'
+	import NoData from '@/components/no-data/no-data.vue';
+	import {
+		mapState
+	} from 'vuex'
 	export default {
-		props:{
+		props: {
 			type: {
 				type: String,
 				default: ''
@@ -59,18 +65,19 @@
 						name: '综合监控'
 					}
 				],
-				list: [
-				],
+				list: [],
 				scrollTop: 0,
 				old: {
 					scrollTop: 0
 				},
 				imgShow: false,
-				searchText: ''
+				searchText: '',
+				hasLoaded: false
 			}
 		},
 		components: {
-			NavBar
+			NavBar,
+			NoData
 		},
 		computed: {
 			...mapState(['hasSkelettion'])
@@ -117,7 +124,7 @@
 						this.getFiles()
 					}
 				})
-				
+
 			},
 			getFiles(title) {
 				let data
@@ -137,6 +144,7 @@
 				}).then(res => {
 					console.log(res, 'getFiles')
 					this.list = res.data.files || []
+					this.hasLoaded = true
 				})
 			},
 			preImg(image) {

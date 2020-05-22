@@ -85,7 +85,25 @@
 								success: function(res) {
 									if (res.confirm) {
 										plus.nativeUI.showWaiting("下载app更新包");
-										plus.runtime.openURL(data.pkgUrl);
+										var dtask = plus.downloader.createDownload(data.pkgUrl, {}, function(d, status) {
+											if (status == 200) { // 下载成功  
+												var path = d.filename;
+												console.log(d.filename);
+												plus.runtime.install(path, {}, function() {
+													plus.nativeUI.closeWaiting();
+													console.log("安装pkg文件成功！");
+												}, function(e) {
+													plus.nativeUI.closeWaiting();
+													console.log("安装pkg文件失败[" + e.code + "]：" + e.message);
+													plus.nativeUI.alert("安装app失败[" + e.code + "]：" + e.message);
+												});
+											} else { //下载失败  
+												alert("Download failed: " + status);
+											}
+										});
+										dtask.start()
+										// plus.nativeUI.showWaiting("下载app更新包");
+										// plus.runtime.openURL(data.pkgUrl);
 									} else if (res.cancel) {
 										console.log('用户点击取消');
 									}
@@ -107,7 +125,7 @@
 				// TODO  
 				console.log(message, 'push message')
 				let pagePath = JSON.parse(message.payload).pagePath
-				uni.navigateTo({  
+				uni.navigateTo({
 					url: pagePath
 				});
 			};
