@@ -91,7 +91,10 @@
                 }
             }
         },
-        "nativePlugins" : {}
+        "nativePlugins" : {},
+        "splashscreen" : {
+            "waiting" : true
+        }
     },
     /* SDK配置 */
     "quickapp" : {},
