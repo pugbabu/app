@@ -4,7 +4,7 @@
 			<block slot="backText">返回</block>
 			<block slot="content">消息公告</block>
 		</cu-custom>
-		<sun-tab :style="{height: CustomBar + 'px'}" class="message-tab" :value.sync="index" :tabList="tabList" defaultColor="#333333" activeColor="#5886fc"></sun-tab>
+		<sun-tab style="height: '44px'" class="message-tab" :value.sync="index" :tabList="tabList" defaultColor="#333333" activeColor="#5886fc"></sun-tab>
 		<template v-if="index == 0">
 			<view class="message-content">
 				<view class="notice-item" v-for="item in notices" :key="item.id">
@@ -122,6 +122,9 @@
 		},
 		components: {
 			sunTab
+		},
+		created() {
+			console.log(this.CustomBar)
 		},
 		methods: {
 			onChange() {
