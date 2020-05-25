@@ -115,23 +115,23 @@
 			});
 			// #endif
 
-			// #ifdef APP-PLUS  
-			// 页面加载时触发  
-			var pinf = plus.push.getClientInfo();
-			var cid = pinf.clientid; //客户端标识  
-			console.log(cid, 'cid')
-			const _self = this;
-			const _handlePush = function(message) {
-				// TODO  
-				console.log(message, 'push message')
-				let pagePath = JSON.parse(message.payload).pagePath
-				uni.navigateTo({
-					url: pagePath
-				});
-			};
-			plus.push.addEventListener('click', _handlePush);
-			plus.push.addEventListener('receive', _handlePush);
-			// #endif  
+			// // #ifdef APP-PLUS  
+			// // 页面加载时触发  
+			// var pinf = plus.push.getClientInfo();
+			// var cid = pinf.clientid; //客户端标识  
+			// console.log(cid, 'cid')
+			// const _self = this;
+			// const _handlePush = function(message) {
+			// 	// TODO  
+			// 	console.log(message, 'push message')
+			// 	let pagePath = JSON.parse(message.payload).pagePath
+			// 	uni.navigateTo({
+			// 		url: pagePath
+			// 	});
+			// };
+			// plus.push.addEventListener('click', _handlePush);
+			// plus.push.addEventListener('receive', _handlePush);
+			// // #endif  
 			uni.getSystemInfo({
 				success: function(e) {
 					// #ifndef MP

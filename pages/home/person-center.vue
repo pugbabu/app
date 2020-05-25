@@ -13,11 +13,11 @@
 				<view class="mine-number">101234</view>
 			</view>
 			<view class="mine-content">
-				<view class="mine-item">
+				<!-- <view class="mine-item">
 					<image src="../../static/my/banci.png"></image>
 					<view class="mine-text">我的班表</view>
-				</view>
-				<view class="mine-item">
+				</view> -->
+				<view class="mine-item" @tap="toSwitch">
 					<image src="../../static/my/zhongxin.png"></image>
 					<view class="mine-text">我的检修任务</view>
 				</view>
@@ -25,10 +25,10 @@
 					<image src="../../static/my/xinxi.png"></image>
 					<view class="mine-text">个人信息</view>
 				</view> -->
-				<view class="mine-item">
+				<!-- <view class="mine-item">
 					<image src="../../static/my/guanzhu.png"></image>
 					<view class="mine-text">我的关注</view>
-				</view>
+				</view> -->
 				<view class="mine-item">
 					<image src="../../static/my/mima.png"></image>
 					<view class="mine-text">修改密码</view>
@@ -88,6 +88,11 @@
 					}
 				})
 		
+			},
+			toSwitch() {
+				uni.navigateTo({
+					url: '/pages/basic/switch-machine'
+				})
 			}
 		}
 	}

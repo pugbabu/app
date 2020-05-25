@@ -33,7 +33,7 @@
 					<view class="cu-list menu-avatar">
 						<view class="cu-item">
 							<view class="cu-tag bg-red continue-tag" v-if="item.step != 4">继续</view>
-							<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
+							<view class="cu-avatar round lg" style="background-image:url(../../static/logo.png);"></view>
 							<view class="content flex-sub">
 								<view class="text-grey">{{item.name}}</view>
 								<view class="text-gray text-sm flex justify-between">
@@ -128,8 +128,6 @@
 	import {
 		mapState
 	} from "vuex";
-	import stationImage from '../../static/dianlu.png'
-	console.log(stationImage)
 	export default {
 		computed: { 
 			...mapState({
@@ -287,7 +285,7 @@
 					setTimeout(() => {
 						uni.previewImage({
 							current: 0,
-							urls: [stationImage]
+							urls: ['../../static/dianlu.png']
 						})
 					}, 150)
 				}

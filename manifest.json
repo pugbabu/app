@@ -47,9 +47,7 @@
             /* ios打包配置 */
             "sdkConfigs" : {
                 "ad" : {},
-                "push" : {
-                    "unipush" : {}
-                }
+                "push" : {}
             },
             "icons" : {
                 "android" : {
@@ -85,13 +83,28 @@
             },
             "splashscreen" : {
                 "android" : {
-                    "hdpi" : "/Users/pugbabu/babu/480*762.png",
-                    "xhdpi" : "/Users/pugbabu/babu/720*1242.png",
-                    "xxhdpi" : "/Users/pugbabu/231573012730_.pic_hd.png"
+                    "hdpi" : "static/start/480.png",
+                    "xhdpi" : "static/start/720.png",
+                    "xxhdpi" : "static/start/1080.png"
                 }
             }
         },
-        "nativePlugins" : {},
+        "nativePlugins" : {
+            "Jiang-OfficeView" : {
+                "__plugin_info__" : {
+                    "name" : "office文档在线预览",
+                    "description" : "office doc xls pdf等文档预览",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=1314",
+                    "android_package_name" : "uni.unittecPKG",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "1314",
+                    "parameters" : {}
+                }
+            }
+        },
         "splashscreen" : {
             "waiting" : true
         }

@@ -5,7 +5,7 @@ import store from '../../store/index.js'
 
 function Request(options) {
 	store.commit('setSkelettion', true)
-	options.url = requestURL + options.url;
+	options.url = options.url.search(/(http|https)/) > -1 ? options.url : requestURL + options.url;
 	options.data = options.data || {}
 	options.header = options.header || {}
 	if (options.method) {

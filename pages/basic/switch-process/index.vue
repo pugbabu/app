@@ -115,14 +115,14 @@
 				} else {
 					this._setStorage()
 					this._validateInput().then(flag => {
-						if (!flag) {
-							uni.showToast({
-								title:'填写内容不能为空',
-								icon: 'none',
-								duration: 1000
-							})
-							return
-						}
+						// if (!flag) {
+						// 	uni.showToast({
+						// 		title:'填写内容不能为空',
+						// 		icon: 'none',
+						// 		duration: 1000
+						// 	})
+						// 	return
+						// }
 						if (this.scroll == this.stepList.length - 1) {
 							uni.navigateTo({
 								url:'./result?id=' + this.id
