@@ -14,7 +14,7 @@
 					</view>
 
 					<view class="notice-item-info">
-						<view class="notice-item-name">{{item.source}}({{item.jobNumber}})</view>
+						<!-- <view class="notice-item-name">{{item.source}}({{item.jobNumber}})</view> -->
 						<view class="notice-item-title" v-if="item.type == 'worksheet'">新工单提醒</view>
 						<view class="notice-item-title" v-else>新的检修任务提醒</view>
 						<view class="notice-item-text">
@@ -69,32 +69,32 @@
 						type: 'worksheet',
 						source: '章三',
 						jobNumber: 100102001,
-						createTime: '2019-09-21 19:00',
-						endTime: '2019年9月26日'
+						createTime: '2020-05-21 19:00',
+						endTime: '2020年5月26日'
 					},
 					{
 						id: '2',
 						type: 'repair',
 						source: '李四',
 						jobNumber: 100102004,
-						createTime: '2019-09-20 09:00',
-						endTime: '2019年9月25日'
+						createTime: '2020-05-20 09:00',
+						endTime: '2020年5月25日'
 					},
 					{
 						id: '3',
 						type: 'worksheet',
 						source: '王五',
 						jobNumber: 100102005,
-						createTime: '2019-09-22 10:00',
-						endTime: '2019年9月29日'
+						createTime: '2020-05-22 10:00',
+						endTime: '2020年5月29日'
 					},
 					{
 						id: '4',
 						type: 'worksheet',
 						source: '赵四',
 						jobNumber: 100102006,
-						createTime: '2019-09-28 11:00',
-						endTime: '2019年10月2日'
+						createTime: '2020-05-28 11:00',
+						endTime: '2020年10月2日'
 					},
 				],
 				announcement: [
@@ -102,7 +102,7 @@
 						id: '1',
 						time: '07月23日 09:00',
 						title: '关于中秋节放假安排',
-						content: '根据国务院办公厅通知精神，2019年仲秋节、国庆节放假安排如下：10月1日（星期日）至10月8日（星期日）放假调休，共8天。9月30日（星期六）上班。'
+						content: '根据国务院办公厅通知精神，现将2020年端午节放假安排通知如下：6月18日（星期一）放假调休，与周末连休。'
 					},
 					{
 						id: '2',
@@ -114,7 +114,7 @@
 						id: '3',
 						time: '05月23日 09:00',
 						title: '关于端午节放假安排',
-						content: '根据国务院办公厅通知精神，现将2019年端午节放假安排通知如下：6月18日（星期一）放假调休，与周末连休。'
+						content: '根据国务院办公厅通知精神，现将2020年端午节放假安排通知如下：2020年仲秋节、国庆节放假安排如下：10月1日（星期日）至10月8日（星期日）放假调休，共8天。9月30日（星期六）上班。'
 					},
 				]
 				

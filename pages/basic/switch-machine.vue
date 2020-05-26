@@ -167,7 +167,8 @@
 						name: '江陵路1号转辙机',
 						// rate: 80,
 						status: 'unfinished',
-						step: 0
+						step: 0,
+						repairType: 'month'
 					},
 					{
 						id: 2,
@@ -175,6 +176,7 @@
 						// rate: 100,
 						status: 'finished',
 						step: 0,
+						repairType: 'week'
 					},
 					{
 						id: 3,
@@ -182,6 +184,7 @@
 						// rate: 20,
 						status: 'unfinished',
 						step: 0,
+						repairType: 'doubleWeek'
 					},
 					{
 						id: 4,
@@ -189,6 +192,15 @@
 						// rate: 60,
 						step: 0,
 						status: 'unfinished',
+						repairType: 'year'
+					},
+					{
+						id: 5,
+						name: '江陵路4号转辙机',
+						// rate: 60,
+						step: 0,
+						status: 'unfinished',
+						repairType: 'halfYear'
 					}
 				],
 				modalName: '',
@@ -236,7 +248,7 @@
 					step = this.scanResult.step
 				}
 				uni.navigateTo({
-					url:`./switch-process/index?step=${step}&id=${this.scanResult.id}`
+					url:`./switch-process/index?step=${step}&id=${this.scanResult.id}&repairType=${this.scanResult.repairType}`
 				})
 			},
 			calcRate(step) {
@@ -268,7 +280,7 @@
 			},
 			scanCode() {
 				let that = this
-				that.scanMachineId = '1'
+				that.scanMachineId = '5'
 				that.scanResult = that.machineList.find(val => {
 					return  val.id == this.scanMachineId
 				})
@@ -329,7 +341,7 @@
 			startRepair() {
 				let step = this.scanResult.step == 0 ? 1 : this.scanResult.step
 				uni.navigateTo({
-					url: `/pages/basic/switch-process/index?step=${step}&id=${this.scanResult.id}`
+					url: `/pages/basic/switch-process/index?step=${step}&id=${this.scanResult.id}&repairType=${this.scanResult.repairType}`
 				})
 			}
 		}

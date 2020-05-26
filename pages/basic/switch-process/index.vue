@@ -4,7 +4,10 @@
 			<view style="flex: auto;">
 				<cu-custom bgColor="bg-gradual-blue" :isManual="true" :isBack="true" @back="handleBack">
 					<block slot="backText">返回</block>
-					<block slot="content">转辙机维修过程</block>
+					<block slot="content">
+						转辙机维修
+						<text>（{{repairTypeName}}）</text>
+					</block>
 				</cu-custom>
 				<scroll-view scroll-x class="bg-white padding response cu-steps steps-bottom" :scroll-into-view="'scroll-' + scroll"
 				 scroll-with-animation>
@@ -77,7 +80,8 @@
 				stepList: switchConfig,
 				step: null,
 				id: null,
-				storageList: []
+				storageList: [],
+				repairType: ''
 			}
 		},
 		computed: {
@@ -93,10 +97,27 @@
 					return '提交'
 				}
 				return '下一步'
+			},
+			repairTypeName() {
+				switch(this.repairType) {
+					case 'week':
+						return '周检'
+					case 'doubleWeek':
+						return '双周检'
+					case 'month':
+						return '月检'
+					case 'halfYear':
+						return '半年检'
+					case 'year':
+						return '年检'
+					default:
+						return ''
+				}
 			}
 
 		},
 		onLoad(option) {
+			this.repairType = option.repairType
 			this.step = option.step
 			this.id = option.id
 			this.scroll = parseInt(this.step) - 1

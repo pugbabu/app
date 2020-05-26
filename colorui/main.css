@@ -1861,7 +1861,7 @@ button.cuIcon.lg {
 }
 
 .cu-custom .cu-bar .content {
-	width: calc(100% - 440upx);
+	width: calc(100% - 400upx);
 }
 
 /* #ifdef MP-ALIPAY */
