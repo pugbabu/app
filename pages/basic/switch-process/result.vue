@@ -78,12 +78,12 @@
 			},
 			toHome() {
 				uni.navigateTo({
-					url: '/pages/home/index'
+					url: '/pages/basic/switch-machine'
 				})
 			},
 			prev() {
 				uni.navigateTo({
-					url:'/pages/basic/switch-process/index?step=4&id=' + this.id
+					url:`/pages/basic/switch-process/index?step=4&id=${this.id}`
 				})
 			}
 		}

@@ -58,7 +58,7 @@
 						<text class="cuIcon-close text-red"></text>
 					</view>
 				</view>
-				<view class="padding-xl">
+				<view class="padding-xl text-lg text-content">
 					{{desc}}
 				</view>
 			</view>
@@ -100,15 +100,21 @@
 			this.step = option.step
 			this.id = option.id
 			this.scroll = parseInt(this.step) - 1
+			console.log(this.scroll, 'scroll')
 			let storageSetting = this._getStorage('switch-task-' + this.id)
 			if (storageSetting) {
 				this.stepList = storageSetting.storageList
-				this.scroll = this.step == 1 ? 0 : storageSetting.curStep
+				// this.scroll = this.step == 1 ? 0 : storageSetting.curStep
 			}
 			console.log(storageSetting)
 		},
 		methods: {
 			ScrollSteps(type) {
+				// 回到顶部
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 100
+				});
 				if (type == 'prev') {
 					this.scroll--
 					

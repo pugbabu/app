@@ -2,7 +2,7 @@
 	<view>
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true" :isManual="true" @back="handleBack">
 			<block slot="backText">返回</block>
-			<block slot="content">转辙机维修</block>
+			<block slot="content">转辙机检修</block>
 			<block slot="right">
 				<view class="action" @tap="scanCode">
 					<text style="font-size: 40upx;" class="lg text-white cuIcon-scan"></text>
@@ -25,14 +25,16 @@
 			<!-- 列表 -->
 			<view class="cu-bar bg-white solid-bottom">
 				<view class="action">
-					<text class="cuIcon-titles text-orange"></text> 任务清单
+					<text class="cuIcon-titles text-orange"></text> 设备列表
 				</view>
 			</view>
 			<view class="cu-card case">
-				<view class="cu-item shadow" v-for="item in machineList" :key="item.id" @tap="showModal" :data-id="item.id" :data-step="item.step" :data-status="item.status">
+				<view class="cu-item shadow" v-for="item in machineList" :key="item.id" @tap="toRepairResult" :data-id="item.id" :data-step="item.step" :data-status="item.status">
 					<view class="cu-list menu-avatar">
 						<view class="cu-item">
-							<view class="cu-tag bg-red continue-tag" v-if="item.step != 4">继续</view>
+							<!-- <view class="cu-tag bg-red continue-tag" v-if="item.step != 4">继续</view> -->
+							<view class="cu-tag bg-green continue-tag" v-if="item.step == 4">完成</view>
+							<view class="cu-tag bg-gray continue-tag" v-if="item.step == 0">未开始</view>
 							<view class="cu-avatar round lg" style="background-image:url(../../static/logo.png);"></view>
 							<view class="content flex-sub">
 								<view class="text-grey">{{item.name}}</view>
@@ -70,8 +72,8 @@
 				</view>
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
-						<button class="cu-btn line-green text-green" @tap="start(1)">重新开始</button>
-						<button class="cu-btn bg-green margin-left" @tap="start(step)">继续</button>
+						<button class="cu-btn line-green text-green" @tap="start('init')">重新开始</button>
+						<button class="cu-btn bg-green margin-left" @tap="start">继续</button>
 		
 					</view>
 				</view>
@@ -101,18 +103,15 @@
 		<view class="cu-modal" :class="modalName=='scanCode'?'show':''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
-					<view class="content">转辙机确认</view>
+					<view class="content">转辙机检修</view>
 					<view class="action" @tap="hideModal">
 						<text class="cuIcon-close text-red"></text>
 					</view>
 				</view>
-				<view class="padding-xl" v-if="!isInRepairList">
-					该设备不在您的维修列表中，请确认设备
-				</view>
-				<view class="padding-xl" v-else>
+				<view class="padding-xl">
 					是否开始该设备的检修？
 				</view>
-				<view class="cu-bar bg-white justify-end" v-if="isInRepairList">
+				<view class="cu-bar bg-white justify-end" >
 					<view class="action">
 						<button class="cu-btn line-green text-green" @tap="hideModal">否</button>
 						<button class="cu-btn bg-green margin-left" @tap="startRepair">是，开始检修</button>
@@ -168,27 +167,27 @@
 						name: '江陵路1号转辙机',
 						// rate: 80,
 						status: 'unfinished',
-						step: 1
+						step: 0
 					},
 					{
 						id: 2,
 						name: '江陵路2号转辙机',
 						// rate: 100,
 						status: 'finished',
-						step: 2,
+						step: 0,
 					},
 					{
 						id: 3,
 						name: '江陵路3号转辙机',
 						// rate: 20,
 						status: 'unfinished',
-						step: 3,
+						step: 0,
 					},
 					{
 						id: 4,
 						name: '江陵路4号转辙机',
 						// rate: 60,
-						step: 3,
+						step: 0,
 						status: 'unfinished',
 					}
 				],
@@ -214,23 +213,30 @@
 			hideModal(e) {
 				this.modalName = null
 			},
-			showModal(e) {
-				let status = e.currentTarget.dataset.status
+			toRepairResult(e) {
 				let step = e.currentTarget.dataset.step
 				let id = e.currentTarget.dataset.id
-				if (step != 4) {
-					this.modalName = 'dialogModal'
-					this.step = step
-					this.id = id
-				} else {
-					uni.navigateTo({
-						url:'/pages/basic/switch-process/result?id=' + id
+				if (step == 0) {
+					uni.showModal({
+						title: '',
+						content: '检修未开始，暂无记录',
+						showCancel: false
 					})
+					return
 				}
-			},
-			start(val) {
 				uni.navigateTo({
-					url:`./switch-process/index?step=${val}&id=${this.id}`
+					url:'/pages/basic/switch-process/result?id=' + id
+				})
+			},
+			start(value) {
+				let step
+				if (value == 'init') {
+					step = 1;
+				} else {
+					step = this.scanResult.step
+				}
+				uni.navigateTo({
+					url:`./switch-process/index?step=${step}&id=${this.scanResult.id}`
 				})
 			},
 			calcRate(step) {
@@ -262,20 +268,44 @@
 			},
 			scanCode() {
 				let that = this
-				uni.scanCode({
-				    success: function (res) {
-						that.scanMachineId = res.result
-						that.scanResult = that.machineList.find(val => {
-							return  val.id == this.scanMachineId
-						})
-						if (!that.scanResult) {
-							that.isInRepairList = false
-						} else {
-							that.isInRepairList = true
-						}
+				that.scanMachineId = '1'
+				that.scanResult = that.machineList.find(val => {
+					return  val.id == this.scanMachineId
+				})
+				console.log(that.scanResult)
+				if (that.scanResult) {
+					// 扫码设备的id存在于工单设备列表
+					if (that.scanResult.step != 0) {
+						// 有维修记录的，则弹出继续维修弹窗
+						that.modalName = 'dialogModal'
+					} else {
 						that.modalName = 'scanCode'
-				    }
-				});
+					}
+					
+					// that.isInRepairList = false
+				} else {
+					uni.showModal({
+						title: '',
+						content: '该设备不在您的维修工单中，请重新检查确认',
+						showCancel: false
+					})
+					// that.isInRepairList = true
+				}
+				// that.modalName = 'scanCode'
+				// uni.scanCode({
+				//     success: function (res) {
+				// 		that.scanMachineId = res.result
+				// 		that.scanResult = that.machineList.find(val => {
+				// 			return  val.id == this.scanMachineId
+				// 		})
+				// 		if (!that.scanResult) {
+				// 			that.isInRepairList = false
+				// 		} else {
+				// 			that.isInRepairList = true
+				// 		}
+				// 		that.modalName = 'scanCode'
+				//     }
+				// });
 			},
 			handleTap(title) {
 				if (title == '检修前注意事项') {
@@ -297,8 +327,9 @@
 				})
 			},
 			startRepair() {
+				let step = this.scanResult.step == 0 ? 1 : this.scanResult.step
 				uni.navigateTo({
-					url: `/pages/basic/switch-process/index?step=${this.scanResult.step}&id=${this.scanResult.id}`
+					url: `/pages/basic/switch-process/index?step=${step}&id=${this.scanResult.id}`
 				})
 			}
 		}
