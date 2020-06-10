@@ -53,7 +53,15 @@
 			"path":"pages/basic/tuzhi-detail",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/basic/my-register-trouble",
+            "style" : {}
+        },
+		{
+		    "path" : "pages/basic/trouble-detail",
+		    "style" : {}
+		}
+    ],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */

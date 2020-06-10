@@ -12,13 +12,13 @@
 						<view class="trouble-name">
 							故障名称
 						</view>
-						<input v-model="troubleName" class="uni-input" name="input" placeholderClass="input-placeholder" placeholder="请输入" />
+						<input v-model="form.troubleName" class="uni-input" name="input" placeholderClass="input-placeholder" placeholder="请输入" />
 					</view>
 					<view class="trouble-item">
 						<view class="trouble-name">
 							故障等级
 						</view>
-						<radio-group class="radio-wrapper" @change="radioChange">
+						<radio-group class="radio-wrapper" @change="radioChange" v-model="form.troubleLevel">
 							<label for="level1" class="label-item">
 								<radio value="level1" :checked="troubleLevel === 'level1'" class="label-item-radio" style="transform:scale(0.7)"></radio>
 								<text style="font-size: 14px;color: #333;">一级</text>
@@ -32,38 +32,52 @@
 								<text style="font-size: 14px;color: #333;">三级</text>
 							</label>
 						</radio-group>
-		
+
 					</view>
 					<view class="trouble-item trouble-item-name">
 						<view class="trouble-name">
 							线路车站
 						</view>
-						<input v-model="lineStation" class="uni-input" name="input" placeholderClass="input-placeholder" placeholder="请输入" />
+						<input v-model="form.lineStation" class="uni-input" name="input" placeholderClass="input-placeholder" placeholder="请输入" />
 					</view>
 					<view class="trouble-item trouble-item-name">
 						<view class="trouble-name">
 							设备
 						</view>
-						<input v-model="deviceName" class="uni-input" name="input" placeholderClass="input-placeholder" placeholder="请输入" />
+						<input v-model="form.deviceName" class="uni-input" name="input" placeholderClass="input-placeholder" placeholder="请输入" />
 					</view>
 					<view class="trouble-item">
 						<view class="trouble-name">
-							故障内容
+							故障描述
 						</view>
-						<textarea v-model="troubleText" style="height: 50px;margin-top: 10px;padding: 10px;font-size: 14px;color:#333;" placeholder-style="color:#999;font-size:14px;"
-						 placeholder="请描述具体的故障内容!" />
+						<textarea v-model="form.troubleText" style="height: 50px;margin-top: 10px;padding: 10px;font-size: 14px;color:#333;"
+						 placeholder-style="color:#999;font-size:14px;" placeholder="请描述具体的故障内容!" />
 						</view>
 					<view class="trouble-item" style="border-bottom: 0;">
 						<view class="trouble-name">
-							附件内容
+							图片上传
 						</view>
 						<view style="margin-top: 10px;">
-							<ss-upload-image :limit="3" :header="headers" :url="url" :file-list="fileList" name="image" @on-success="onSuccess" @on-error="handleError"  />
+								<view class="grid col-4 grid-square flex-sub">
+									<view class="bg-img" v-for="(item,index) in imgList" :key="index" @tap="ViewImage" :data-url="imgList[index]">
+									 <image :src="item.path" mode="aspectFill"></image>
+									<view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index">
+										<text class='cuIcon-close'></text>
+									</view>
+									</view>
+									<view class="solids" @tap="ChooseImage" v-if="imgList.length < imgCount">
+										<text class='cuIcon-cameraadd'></text>
+									</view>
+								</view>
+								<view class="text-orange">
+									Tip: 最多支持上传{{imgCount}}张图片
+								</view>
+							<!-- <ss-upload-image :limit="3" :header="headers" :url="url" :file-list="fileList" name="image" @on-success="onSuccess" @on-error="handleError"  /> -->
 						</view>
 					</view>
 				</form>
 			</view>
-			<view class="register-btn" @tap="submit">登记</view>
+			<view class="register-btn" :class="{'register-btn-gray': isRegistering}" @tap="submit">登记</view>
 		</view>
 	</view>
 	
@@ -85,7 +99,17 @@
 				 lineStation: '',
 				 deviceName: '',
 				 troubleText: '',
-				 hasSkelettion: true
+				 hasSkelettion: true,
+				 form: {
+					troubleName: '', // 故障名称
+					troubleLevel: '', // 故障等级
+					lineStation: '', // 故障车站
+					deviceName: '', // 故障设备
+					troubleText: '' ,// 故障内容
+				 },
+				 imgList: [],
+				 imgCount: 9,
+				 isRegistering: false
 			}
 		},
 		components: {
@@ -117,33 +141,78 @@
 				})
 			},
 			radioChange(v) {
-				this.troubleLevel = v.detail.value
+				this.form.troubleLevel = v.detail.value
 			},
 			submit() {
+				if (this.isRegistering) {
+					return
+				}
 				let str = ''
-				if (!this.troubleName) {
+				if (!this.form.troubleName) {
 					str = '请输入故障名称'
-				} else if (!this.troubleLevel) {
+				} else if (!this.form.troubleLevel) {
 					str = '请选择故障等级'
-				} else if (!this.lineStation) {
+				} else if (!this.form.lineStation) {
 					str = '请输入线路车站'
-				} else if (!this.deviceName) {
+				} else if (!this.form.deviceName) {
 					str = '请输入设备名称'
-				} else if (!this.troubleText) {
+				} else if (!this.form.troubleText) {
 					str = '请描述故障内容'
 				}
+				console.log(str, 'strrrrrrrrrrrrr')
 				if (!str) {
+					console.log('whyyyyyyyyyyyyy')
 					uni.showLoading({
 					    title: '登记中'
 					});
-					setTimeout(function () {
-					    uni.hideLoading();
-						uni.navigateTo({
-							url: '/pages/home/index',
-							animationType: 'pop-in',
-							animationDuration: 300
+					this.isRegistering = true
+					// let formData = new FormData()
+					// for (let key in  this.form) {
+					// 	formData.append(key, this.form[key])
+					// }
+					// console.log(formData)
+					// this.form.file = this.imgList
+					// this.imgList.forEach(file => {
+					// 	this.form.file.push()
+					// })
+					let imgs = this.imgList.map((file, index) => {
+						return {
+							file: file
+						}
+					})
+					console.log('hehhehhee')
+					this.$store.dispatch('registerTrouble', {
+						url: `http://192.168.156.38:8080/common/upload/doRepair`,
+						files: imgs,
+						formData: this.form,
+					}).then(res => {
+						console.log('rrrrrrrrrrrrrrrrrr')
+						res = JSON.parse(res)
+						this.isRegistering = false
+						uni.hideLoading()
+						if (res.code == 200) {
+							uni.showToast({
+								icon:'none',
+								title: '登记成功'
+							})
+							setTimeout(function () {
+								uni.navigateTo({
+									url: '/pages/home/index',
+									animationType: 'pop-in',
+									animationDuration: 300
+								});
+							}, 500);
+							
+						}
+					}).catch(err => {
+						console.log(err, 'errrorrrrrrrrrrrr')
+						uni.showLoading({
+						    title: '登记中'
 						});
-					}, 2000);
+						this.isRegistering = false
+						
+					})
+				
 					
 				} else {
 					uni.showToast({
@@ -152,7 +221,44 @@
 					})
 				}
 				
-			}
+			},
+			ChooseImage() {
+				uni.chooseImage({
+					count: this.imgCount, //默认9
+					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+					success: (res) => {
+						if (this.imgList.length != 0) {
+							
+							this.imgList = this.imgList.concat(res.tempFiles)
+							// this.form.imageData = this.form.imageData.concat(res.tempFiles)
+						} else {
+							this.imgList = res.tempFiles
+							// this.form.imageData = res.tempFiles
+						}
+						console.log(this.imgList)
+					}
+				});
+			},
+			ViewImage(e) {
+				uni.previewImage({
+					urls: this.imgList,
+					current: e.currentTarget.dataset.url
+				});
+			},
+			DelImg(e) {
+				uni.showModal({
+					title: '',
+					content: '确定要删除这张照片吗？',
+					cancelText: '取消',
+					confirmText: '确定',
+					success: res => {
+						if (res.confirm) {
+							this.imgList.splice(e.currentTarget.dataset.index, 1)
+							// this.form.imageData.splice(e.currentTarget.dataset.index, 1)
+						}
+					}
+				})
+			},
 		}
 	}
 </script>
@@ -217,6 +323,10 @@
 		margin-top: 20rpx;
 		padding-right: 20rpx;
 		
+	}
+	.register-btn-gray{
+		background-color: #f0f0f0;
+		color: #333333;
 	}
 	
 </style>

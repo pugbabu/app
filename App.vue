@@ -8,18 +8,13 @@
 			...mapMutations['login']
 		},
 		onLaunch: function() {
-			// 通过token缓存，判断用户是否登录，token不存在，跳转登录页面
-			uni.getStorage({
-				key: 'token',
-				success: function(res) {
-					console.log(res.data)
-					if (!res.data) {
-						uni.navigateTo({
-							url: '/pages/login/login'
-						})
-					}
-				}
-			})
+			console.log(this.$storage.getStorage('sessionId'), 'sessionId')
+			if (!this.$storage.getStorage('sessionId')) {
+				uni.navigateTo({
+					url: '/pages/login/login'
+				})
+				return
+			}
 			/**
 			 * @description APP更新，热更新和整包更新
 			 */
@@ -33,7 +28,7 @@
 				})
 				console.log(uni)
 				uni.request({
-					url: 'http://192.168.196.254:3000/pkg/update',
+					url: 'http://124.160.91.203:4400/pkg/update',
 					data: {
 						version: widgetInfo.version,
 						name: widgetInfo.name

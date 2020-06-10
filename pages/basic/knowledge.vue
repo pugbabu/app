@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="knowledge-page">
 		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="backText">返回</block>
 			<block slot="content">资料库</block>
@@ -12,10 +12,11 @@
 			<view class="cu-bar tabbar bg-white shadow foot">
 				<view class="action" @click="NavChange" data-cur="tuzhi" data-type="1">
 					<view class='cuIcon-cu-image'>
-						<image v-if="pageUrl == 'tuzhi'" src="/static/knowledge/tuzhi-active.png"></image>
-						<image v-else src="/static/knowledge/tuzhi.png"></image>
+						<view class="cuIcon-pic" :class="[pageUrl == 'tuzhi' ? 'text-green' : 'text-gray']" style="font-size: 46upx;"></view>
 					</view>
-					<view>图纸</view>
+					<view>
+						<text :class="[pageUrl == 'tuzhi' ? 'text-green' : 'text-gray']">图纸</text>
+					</view>
 				</view>
 				<!-- <view class="action text-gray add-action" @click="NavChange" data-cur="upload">
 					<button class="cu-btn cuIcon-add bg-green shadow"></button>
@@ -23,10 +24,11 @@
 				</view> -->
 				<view class="action" @click="NavChange" data-cur="document" data-type="2">
 					<view class='cuIcon-cu-image'>
-						<image v-if="pageUrl == 'document'" src="../../static/knowledge/shipin-active.png"></image>
-						<image v-else src="/static/knowledge/shipin.png"></image>
+						<view class="cuIcon-text" :class="[pageUrl == 'document' ? 'text-green' : 'text-gray']" style="font-size: 46upx;"></view>
 					</view>
-					<view>文档</view>
+					<view>
+						<text :class="[pageUrl == 'document' ? 'text-green' : 'text-gray']">文档</text>
+					</view>
 				</view>
 			</view>
 			
@@ -67,6 +69,10 @@
 			// 	console.log(res, 'getFiles')
 			// })
 			// this.getFiles(this.type)
+		},
+		onUnload() {
+			console.log('onUnload')
+			uni.hideLoading()
 		},
 	    methods: {
 	      NavChange(e) {
@@ -124,4 +130,8 @@
 </script>
 
 <style>
+	.knowledge-page{
+		height: 100vh;
+		background: #fff;
+	}
 </style>

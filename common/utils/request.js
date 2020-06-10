@@ -15,16 +15,16 @@ function Request(options) {
 	}
 	options.timeout = options.timeout || 30000
 	options.dataType = options.dataType || 'json'
-	const token = uni.getStorageSync('token');
-	console.log(token)
-	if (token) {
-		options.header.Authorization = 'Bearer ' + token
-	} else {
-		uni.navigateTo({
-			url: '/pages/login/login'
-		})
-		return
-	}
+	// const token = uni.getStorageSync('token');
+	// console.log(token)
+	// if (token) {
+	// 	options.header.Authorization = 'Bearer ' + token
+	// } else {
+	// 	uni.navigateTo({
+	// 		url: '/pages/login/login'
+	// 	})
+	// 	return
+	// }
 	return new Promise((resolve, reject) => {
 		uni.request({
 			...options,

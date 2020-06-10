@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App'
 import store from "./store";
 import binerStore from '@/components/biner-store/biner-store' // 本地存储
+import config from './common/config' // 配置
+import './common/utils/uni-guard.js'
 
 /*           注册全局自定义组件            */
 import cuCustom from './colorui/components/cu-custom.vue'
@@ -13,6 +15,7 @@ Vue.component('easy-skeleton',easySkeleton)
 
 Vue.prototype.$store = store;
 Vue.prototype.$storage = binerStore; // 本地存储
+Vue.prototype.$config = config; // 配置
 // 1.存储 setStorage(key,data,timer)
 // this.$storage.setStorage(key,data,3000);
 // 2.获取 getStorage(key)

@@ -8,16 +8,16 @@
 		</cu-custom>
 		<view class="mine">
 			<view class="mine-head">
-				<image class="avatar"  src="https://shopnc-oss.oss-cn-hangzhou.aliyuncs.com/platform/87e1b00d-69d7-47e4-89d9-8130dd238e9f.jpeg"></image>
-				<view class="mine-nickname">小众</view>
-				<view class="mine-number">101234</view>
+				<image class="avatar"  :src="headImage"></image>
+				<view class="mine-nickname">{{userName}}</view>
+				<!-- <view class="mine-number">101234</view> -->
 			</view>
 			<view class="mine-content">
 				<!-- <view class="mine-item">
 					<image src="../../static/my/banci.png"></image>
 					<view class="mine-text">我的班表</view>
 				</view> -->
-				<view class="mine-item" @tap="toSwitch">
+				<view class="mine-item" @tap="toPage('/pages/basic/switch-machine')">
 					<image src="../../static/my/zhongxin.png"></image>
 					<view class="mine-text">我的检修任务</view>
 				</view>
@@ -25,14 +25,14 @@
 					<image src="../../static/my/xinxi.png"></image>
 					<view class="mine-text">个人信息</view>
 				</view> -->
-				<!-- <view class="mine-item">
+				<view class="mine-item"  @tap="toPage('/pages/basic/my-register-trouble')">
 					<image src="../../static/my/guanzhu.png"></image>
-					<view class="mine-text">我的关注</view>
-				</view> -->
-				<view class="mine-item">
+					<view class="mine-text">我登记的故障</view>
+				</view>
+				<!-- <view class="mine-item">
 					<image src="../../static/my/mima.png"></image>
 					<view class="mine-text">修改密码</view>
-				</view>
+				</view> -->
 				<view class="mine-item" @tap="showVersion">
 					<image src="../../static/my/banben.png"></image>
 					<view class="mine-text">版本信息</view>
@@ -48,7 +48,22 @@
 	export default {
 		data() {
 			return {
-				
+			}
+		},
+		computed: {
+			userName() {
+				let userInfo = this.$storage.getStorage('userInfo')
+				if (userInfo) {
+					return userInfo.userName
+				}
+				return '小众'
+			},
+			headImage() {
+				let userInfo = this.$storage.getStorage('userInfo')
+				if (userInfo) {
+					return this.$config.requestURL + userInfo.headImage.split('8080')[1]
+				}
+				return 'https://shopnc-oss.oss-cn-hangzhou.aliyuncs.com/platform/87e1b00d-69d7-47e4-89d9-8130dd238e9f.jpeg'
 			}
 		},
 		methods: {
@@ -89,9 +104,9 @@
 				})
 		
 			},
-			toSwitch() {
+			toPage(url) {
 				uni.navigateTo({
-					url: '/pages/basic/switch-machine'
+					url
 				})
 			}
 		}

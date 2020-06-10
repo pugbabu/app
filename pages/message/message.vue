@@ -7,7 +7,7 @@
 		<sun-tab style="height: '44px'" class="message-tab" :value.sync="index" :tabList="tabList" defaultColor="#333333" activeColor="#5886fc"></sun-tab>
 		<template v-if="index == 0">
 			<view class="message-content">
-				<view class="notice-item" v-for="item in notices" :key="item.id">
+				<view class="notice-item" v-for="item in notices" :key="item.id" @click="toSwitch">
 					<view class="notice-icon-wrapper">
 						<image class="notice-icon" v-if="item.type == 'repair'" src="../../static/message/repair.png"></image>
 						<image class="notice-icon" v-else src="../../static/message/sheet.png"></image>
@@ -129,6 +129,11 @@
 		methods: {
 			onChange() {
 
+			},
+			toSwitch() {
+				uni.navigateTo({
+					url: '/pages/basic/switch-machine'
+				}) 
 			}
 		}
 	}

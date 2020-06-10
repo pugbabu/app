@@ -15,7 +15,7 @@
 			<view class="form-item">
 				<image src="../../static/login/password.png" class="icon"></image>
 				<input v-if="!pwdErrorFlag" @blur="handlePwdBlur"  v-model="password" type="password" class="form-item-input" name="password" placeholder-class="input-placeholder" placeholder="请输入密码" />
-				<input v-else="pwdErrorFlag" @blur="handlePwdBlur"  v-model="password" type="password" class="form-item-input" name="password" placeholder-class="error-placeholder" placeholder="请输入密码" />
+				<input v-else @blur="handlePwdBlur"  v-model="password" type="password" class="form-item-input" name="password" placeholder-class="error-placeholder" placeholder="请输入密码" />
 			</view>
 		<!-- 	<view class="form-item">
 				<text class="tip">登录即同意《众合科技协议》《隐私保护指引》</text>
@@ -43,6 +43,7 @@
 		},
 		methods: {
 			login() {
+				console.log(this.$config)
 				let that = this
 				if (!this.username) {
 					uni.showToast({
@@ -60,42 +61,33 @@
 					});
 					return
 				}
-				uni.request({
-					url: 'http://192.168.196.254:3000/user/login',
+				this.$store.dispatch('login', {
+					url: this.$config.requestURL + `/login/doApp`,
 					method: 'POST',
 					data: {
-						username: this.username,
-						password: this.password
+						username: that.username,
+						password: that.password
 					},
-					success(res) {
-						console.log(res.data.message)
-						let message = res.data.message
-						if (!res.data.data) {
-							uni.showToast({
-								icon: 'none',
-								title: message
-							})
-							return
-						} else {
-							uni.setStorage({
-								key: 'token',
-								data: 'token'
-							})
-							uni.navigateTo({
-								url: '/pages/home/index'
-							})
-						}
-					},
-					fail() {
-						
+					header:{
+						'content-type': 'application/x-www-form-urlencoded' //自定义请求头信息
+					}
+				}).then(res => {
+					console.log(res)
+					let message = res.message
+					if (res.code != 200) {
+						uni.showToast({
+							icon: 'none',
+							title: message || '登录失败'
+						})
+						return
+					} else {
+						that.$storage.setStorage('sessionId', res.data.sessionId);
+						this.$storage.setStorage('userInfo', res.data)
+						uni.navigateTo({
+							url: '/pages/home/index'
+						})
 					}
 				})
-				// uni.switchTab({
-				// 	url: '/pages/home/home'
-				// })
-			},
-			register() {
-				
 			},
 			handleBlur() {
 				console.log((this.username))

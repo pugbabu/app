@@ -41,6 +41,14 @@
 			personCenter,
 			materialStock
 		},
+		onShow() {
+			if (!this.$storage.getStorage('sessionId')) {
+				uni.navigateTo({
+					url: '/pages/login/login'
+				})
+				return
+			}
+		},
 		methods: {
 			NavChange: function(e) {
 				this.PageCur = e.currentTarget.dataset.cur

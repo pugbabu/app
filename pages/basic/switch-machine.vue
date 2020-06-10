@@ -279,45 +279,35 @@
 				}
 			},
 			scanCode() {
+				
 				let that = this
-				that.scanMachineId = '5'
-				that.scanResult = that.machineList.find(val => {
-					return  val.id == this.scanMachineId
-				})
-				console.log(that.scanResult)
-				if (that.scanResult) {
-					// 扫码设备的id存在于工单设备列表
-					if (that.scanResult.step != 0) {
-						// 有维修记录的，则弹出继续维修弹窗
-						that.modalName = 'dialogModal'
-					} else {
-						that.modalName = 'scanCode'
-					}
-					
-					// that.isInRepairList = false
-				} else {
-					uni.showModal({
-						title: '',
-						content: '该设备不在您的维修工单中，请重新检查确认',
-						showCancel: false
-					})
-					// that.isInRepairList = true
-				}
-				// that.modalName = 'scanCode'
-				// uni.scanCode({
-				//     success: function (res) {
-				// 		that.scanMachineId = res.result
-				// 		that.scanResult = that.machineList.find(val => {
-				// 			return  val.id == this.scanMachineId
-				// 		})
-				// 		if (!that.scanResult) {
-				// 			that.isInRepairList = false
-				// 		} else {
-				// 			that.isInRepairList = true
-				// 		}
-				// 		that.modalName = 'scanCode'
-				//     }
-				// });
+				uni.scanCode({
+				    success: function (res) {
+						that.scanMachineId = '1'
+						that.scanResult = that.machineList.find(val => {
+							return  val.id == that.scanMachineId
+						})
+						console.log(that.scanResult)
+						if (that.scanResult) {
+							// 扫码设备的id存在于工单设备列表
+							if (that.scanResult.step != 0) {
+								// 有维修记录的，则弹出继续维修弹窗
+								that.modalName = 'dialogModal'
+							} else {
+								that.modalName = 'scanCode'
+							}
+							
+						} else {
+							uni.showModal({
+								title: '',
+								content: '该设备不在您的维修工单中，请重新检查确认',
+								showCancel: false
+							})
+						}
+				    }
+				});
+				
+
 			},
 			handleTap(title) {
 				if (title == '检修前注意事项') {

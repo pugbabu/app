@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="cu-custom" :style="[{height:CustomBar + 'px'}]">
-			<view class="cu-bar fixed" :style="style" :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
+			<view class="cu-bar fixed cu-bar-h" :style="style" :class="[bgImage!=''?'none-bg text-white bg-img':'',bgColor]">
 				<view class="action" @tap="BackPage" v-if="isBack">
 					<text class="cuIcon-back"></text>
 					<slot name="backText"></slot>
@@ -71,5 +71,10 @@
 </script>
 
 <style>
-
+.cu-custom{
+	height: 45px;
+}
+.cu-bar-h{
+	height: 45px;
+}
 </style>

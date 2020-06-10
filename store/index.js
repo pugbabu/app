@@ -106,6 +106,30 @@ const store = new Vuex.Store({
 		async getFiles(ctx, options) {
 			let result = await request(options)
 			return result
+		},
+		async login(ctx, options) {
+			let result = await request(options)
+			return result
+		},
+		async getFileByDir(ctx, options) {
+			let result = await request(options)
+			return result
+		},
+		async registerTrouble(ctx, options) {
+			console.log(options, 'options')
+			return new Promise((resolve, reject) => {
+				uni.uploadFile({
+					...options,
+					success: res => {
+						resolve(res.data)
+					},
+					fail: (error) => {
+						console.log('registerTrouble')
+						reject(error)
+					}
+				})
+			})
+		
 		}
 	}
 })

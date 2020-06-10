@@ -1,7 +1,7 @@
 <template>
 	<view class="tuzhi-wrapper">
-		<easy-skeleton SkelttionType="prouct" v-show="hasSkelettion"></easy-skeleton>
-		<view v-show="!hasSkelettion">
+		<!-- <easy-skeleton SkelttionType="prouct" v-show="hasSkelettion"></easy-skeleton> -->
+		<view>
 			<view class="cu-bar bg-white search">
 				<view class="search-form round">
 					<text class="cuIcon-search"></text>
@@ -11,16 +11,19 @@
 					<button class="cu-btn bg-gradual-green shadow-blur round" @tap="search">搜索</button>
 				</view>
 			</view>
+			<directory :directories="directories" @selectDir="selectDir" v-if="!isSearch"></directory>
 			<!-- <nav-bar :navs="navs" @tabChange="tabChange"></nav-bar> -->
 			<view v-if="!list.length && hasLoaded">
-				<no-data text="暂无文档"></no-data>
+				<no-data text="暂无图纸"></no-data>
 			</view>
 			<view class="tuzhi-list" v-else>
 				<scroll-view style="height: calc(100vh - 200rpx);padding:40rpx 0;" :scroll-top="scrollTop" scroll-y="true" class="scroll-Y"
 				 @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
-					<view class="tuzhi-item" v-for="(item, index) in list" :key="index">
-						<view class="tuzhi-title">{{item.title}}</view>
-						<image :lazy-load="true" :src="item.filePath" @click="preImg(item.filePath)"></image>
+					<view class="tuzhi-item padding-sm margin-bottom-sm" v-for="(item, index) in list" :key="index" @click="preImg(item)">
+						<view class="cuIcon-file text-green margin-right-sm" style="font-size: 44upx;" v-if="item.fileType == 'folder'"></view>
+						<view class="cuIcon-pic text-gray margin-right-sm" style="font-size: 44upx;" v-else></view>
+						<view class="text-grey" style="display: flex;align-items: center;">{{item.name.split('.')[0]}}</view>
+						<!-- <image :lazy-load="true" :src="'http://' + item.filePath" @click="preImg(item.filePath)"></image> -->
 					</view>
 				</scroll-view>
 			</view>
@@ -32,6 +35,7 @@
 <script>
 	import NavBar from '../nav/nav.vue'
 	import NoData from '@/components/no-data/no-data.vue';
+	import Directory from '../directory/directory.vue'
 	import {
 		mapState
 	} from 'vuex'
@@ -44,6 +48,7 @@
 		},
 		data() {
 			return {
+				isSearch: false,
 				navs: [{
 						id: '1',
 						name: '信号专业'
@@ -72,12 +77,20 @@
 				},
 				imgShow: false,
 				searchText: '',
-				hasLoaded: false
+				hasLoaded: false,
+				directories: [
+					{
+						fileId: '0',
+						name: '根目录'
+					}
+				],
+				currentDirId: ''
 			}
 		},
 		components: {
 			NavBar,
-			NoData
+			NoData,
+			Directory
 		},
 		computed: {
 			...mapState(['hasSkelettion'])
@@ -89,7 +102,8 @@
 		},
 		created() {
 			console.log('crated')
-			this.getFiles()
+			// this.getFiles()
+			this.getFileByDir('0')
 		},
 		methods: {
 			tabChange(index) {
@@ -116,51 +130,92 @@
 				});
 			},
 			search() {
+				if (!this.searchText) return
+				this.isSearch = true
 				this.getFiles(this.searchText)
 			},
 			handleInput() {
 				setTimeout(() => {
 					if (!this.searchText) {
-						this.getFiles()
+						this.isSearch = false
+						this.getFileByDir('0')
 					}
 				})
 
 			},
-			getFiles(title) {
-				let data
-				if (title) {
-					data = {
-						type: this.type,
-						title
-					}
-				} else {
-					data = {
-						type: this.type
-					}
+			getFiles(name) {
+				let data = {
+					searchType: 'image',
+					sessionId: this.$storage.getStorage('sessionId')
 				}
+				if (name) {
+					data.name = name
+				} 
 				this.$store.dispatch('getFiles', {
-					url: '/file/list',
+					url: this.$config.requestURL + '/portal/showlist2App.action',
 					data: data
 				}).then(res => {
 					console.log(res, 'getFiles')
-					this.list = res.data.files || []
+					this.list = res.data || []
 					this.hasLoaded = true
 				})
 			},
-			preImg(image) {
-				if (this.imgShow) { //防止点击过快导致重复调用
-					return;
-				}
-				this.imgShow = true;
-				setTimeout(() => {
-					this.imgShow = false;
-				}, 1000)
-				setTimeout(() => {
-					uni.previewImage({
-						current: 0,
-						urls: [image]
+			getFileByDir(parentId) {
+				uni.showLoading({
+				    title: '加载中'
+				});
+				this.$store.dispatch('getFileByDir', {
+					url: this.$config.requestURL + '/portal/biFileList2App.action',
+					data: {
+						searchType: 'image',
+						parentId: parentId,
+						sessionId: this.$storage.getStorage('sessionId')
+					},
+					withCredentials: true,
+					header:{
+						'content-type': 'application/x-www-form-urlencoded' //自定义请求头信息
+					}
+				}).then(res => {
+					console.log(res)
+					uni.hideLoading()
+					this.list = res.data || []
+					this.hasLoaded = true
+				}).catch(err => {
+					uni.hideLoading()
+				})
+			},
+			preImg(item) {
+				if (item.fileType == 'folder') {
+					this.getFileByDir(item.fileId)
+					this.directories.push({
+						name: item.name,
+						fileId: item.fileId
 					})
-				}, 150)
+				} else {
+					console.log(item.filePath)
+					item.filePath = item.filePath.split('8080')[1]
+					let image = this.$config.requestURL + item.filePath
+					console.log(image)
+					if (this.imgShow) { //防止点击过快导致重复调用
+						return;
+					}
+					this.imgShow = true;
+					setTimeout(() => {
+						this.imgShow = false;
+					}, 1000)
+					setTimeout(() => {
+						uni.previewImage({
+							current: 0,
+							urls: [image]
+						})
+					}, 150)
+				}
+				
+			},
+			selectDir(obj) {
+				let i = obj.index
+				this.directories = this.directories.slice(0, i+1)
+				this.getFileByDir(obj.fileId)
 			}
 		}
 	}
@@ -176,9 +231,11 @@
 	}
 
 	.tuzhi-item {
-		padding: 0 20rpx;
+		/* padding: 0 20rpx;
 		margin-bottom: 20rpx;
-		padding-bottom: 20rpx;
+		padding-bottom: 20rpx; */
+		display: flex;
+		align-items: center;
 	}
 
 	.tuzhi-title {

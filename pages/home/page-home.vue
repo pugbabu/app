@@ -26,11 +26,33 @@
 		name: "basics",
 		data() {
 			return {
-				elements: [{
+				elements: [
+					{
+						title: '资料库',
+						url: 'knowledge',
+						name: 'knowledge',
+						color: 'cyan',
+						cuIcon: 'newsfill'
+					},
+					{
+						title: '故障登记 ',
+						url: 'trouble-register',
+						name: 'trouble register',
+						color: 'mauve',
+						cuIcon: 'cuIcon'
+					},
+					{
+						title: '转辙机',
+						url: 'switch-machine',
+						name: 'switch machine',
+						color: 'pink',
+						cuIcon: 'btn'
+					},
+					{
 						title: '综合监测',
 						url: 'zonghejiance',
 						name: 'multiple monitor',
-						color: 'cyan',
+						color: 'olive',
 						cuIcon: 'newsfill'
 					},
 					{
@@ -47,28 +69,7 @@
 						color: 'purple',
 						cuIcon: 'font'
 					},
-					{
-						title: '故障登记 ',
-						url: 'trouble-register',
-						name: 'trouble register',
-						color: 'mauve',
-						cuIcon: 'cuIcon'
-					},
-					{
-						title: '资料库',
-						url: 'knowledge',
-						name: 'knowledge',
-						color: 'brown',
-						cuIcon: 'tagfill'
-					},
-					{
-						title: '转辙机',
-						url: 'switch-machine',
-						name: 'switch machine',
-						color: 'pink',
-						cuIcon: 'btn'
-					},
-
+				
 				],
 			};
 		},

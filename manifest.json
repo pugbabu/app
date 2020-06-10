@@ -1,8 +1,8 @@
 {
-    "name" : "unittec-app-v1",
+    "name" : "unittec-app",
     "appid" : "__UNI__1EA825E",
     "description" : "",
-    "versionName" : "2.0.1",
+    "versionName" : "1.0.1",
     "versionCode" : 100,
     "transformPx" : false,
     "app-plus" : {
