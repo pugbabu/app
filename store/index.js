@@ -116,20 +116,36 @@ const store = new Vuex.Store({
 			return result
 		},
 		async registerTrouble(ctx, options) {
-			console.log(options, 'options')
-			return new Promise((resolve, reject) => {
-				uni.uploadFile({
-					...options,
-					success: res => {
-						resolve(res.data)
-					},
-					fail: (error) => {
-						console.log('registerTrouble')
-						reject(error)
-					}
-				})
-			})
+			console.log({...options}, 'options')
+			let result = await uni.uploadFile({...options})
+			return result
+			// return new Promise((resolve, reject) => {
+			// 	console.log(uni)
+			// 	uni.uploadFile({
+			// 		...options,
+			// 		success: res => {
+			// 			console.log(res, 'registerTroubleregister')
+			// 			// resolve(res.data)
+			// 		},
+			// 		fail: (error) => {
+			// 			console.log('registerTrouble')
+			// 			reject(error)
+			// 		}
+			// 	})
+			// })
 		
+		},
+		async registerTrouble1(ctx, options) {
+			let result = await request(options)
+			return result
+		},
+		async getTtroubles(ctx, options) {
+			let result = await request(options)
+			return result
+		},
+		async getTtroubleDetail(ctx, options) {
+			let result = await request(options)
+			return result
 		}
 	}
 })

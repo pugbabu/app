@@ -83,25 +83,35 @@
 				})
 			},
 			showVersion() {
-				let version = ''
-				uni.getStorage({
-					key: 'widgetInfo',
-					success: function(res) {
-						console.log(res)
-						version = res.data.version
-						uni.showModal({
-						    title: '',
-						    content: `当前版本是${version}`,
-							showCancel: false,
-						    success: function (res) {
-						        if (res.confirm) {
-						            console.log('用户点击确定');
-						        }
-						    }
-						});
+				let version = this.$storage.getStorage('widgetInfo').version
+				uni.showModal({
+				    title: '',
+				    content: `当前版本是${version}`,
+					showCancel: false,
+				    success: function (res) {
+				        if (res.confirm) {
+				            console.log('用户点击确定');
+				        }
+				    }
+				});
+				// uni.getStorage({
+				// 	key: 'widgetInfo',
+				// 	success: function(res) {
+				// 		console.log(res)
+				// 		version = res.data.version
+				// 		uni.showModal({
+				// 		    title: '',
+				// 		    content: `当前版本是${version}`,
+				// 			showCancel: false,
+				// 		    success: function (res) {
+				// 		        if (res.confirm) {
+				// 		            console.log('用户点击确定');
+				// 		        }
+				// 		    }
+				// 		});
 						
-					}
-				})
+				// 	}
+				// })
 		
 			},
 			toPage(url) {

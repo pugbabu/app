@@ -84,7 +84,8 @@
 </template>
 
 <script>
-	import ssUploadImage from '@/components/ss-upload-image/ss-upload-image.vue'
+	// import ssUploadImage from '@/components/ss-upload-image/ss-upload-image.vue'
+	import request from '@/js_sdk/bjx-request/index.js'
 	export default {
 		data() {
 			return {
@@ -109,16 +110,22 @@
 				 },
 				 imgList: [],
 				 imgCount: 9,
-				 isRegistering: false
+				 isRegistering: false,
+				 filePath: '',
+				 img: []
 			}
 		},
-		components: {
-			ssUploadImage
+		created() {
+			console.log(this.StatusBar, this.CustomBar, '高度')
 		},
 		onReady() {
 			setTimeout(() => {
 				this.hasSkelettion = false
 			}, 500)
+		},
+		onUnload() {
+			console.log('onUnload')
+			uni.hideLoading()
 		},
 		methods: {
 			onSuccess(res) {
@@ -144,6 +151,7 @@
 				this.form.troubleLevel = v.detail.value
 			},
 			submit() {
+				console.log('testttt')
 				if (this.isRegistering) {
 					return
 				}
@@ -160,36 +168,33 @@
 					str = '请描述故障内容'
 				}
 				console.log(str, 'strrrrrrrrrrrrr')
+				let imgs = []
+				for (let i = 0 ; i < this.imgList.length; i++) {
+					let obj = {}
+					obj.name = 'file' + i
+					obj.uri = this.imgList[i].path
+					imgs.push(obj)
+					obj = null
+				}
 				if (!str) {
-					console.log('whyyyyyyyyyyyyy')
 					uni.showLoading({
 					    title: '登记中'
 					});
 					this.isRegistering = true
-					// let formData = new FormData()
-					// for (let key in  this.form) {
-					// 	formData.append(key, this.form[key])
-					// }
-					// console.log(formData)
-					// this.form.file = this.imgList
-					// this.imgList.forEach(file => {
-					// 	this.form.file.push()
-					// })
-					let imgs = this.imgList.map((file, index) => {
-						return {
-							file: file
-						}
-					})
-					console.log('hehhehhee')
+					this.form.sessionId = this.$storage.getStorage('sessionId')
 					this.$store.dispatch('registerTrouble', {
-						url: `http://192.168.156.38:8080/common/upload/doRepair`,
+						url: `${this.$config.requestURL}/common/upload/doRepair`,
 						files: imgs,
 						formData: this.form,
+						fileType: 'image',
+						// filePath: this.filePath[0],
+						// name: 'file'
+						
 					}).then(res => {
-						console.log('rrrrrrrrrrrrrrrrrr')
-						res = JSON.parse(res)
+						res = JSON.parse(res[1].data)
 						this.isRegistering = false
 						uni.hideLoading()
+						console.log(res)
 						if (res.code == 200) {
 							uni.showToast({
 								icon:'none',
@@ -205,10 +210,12 @@
 							
 						}
 					}).catch(err => {
-						console.log(err, 'errrorrrrrrrrrrrr')
 						uni.showLoading({
-						    title: '登记中'
+						    title: '出错了~'
 						});
+						setTimeout(() => {
+							uni.hideLoading()
+						}, 500)
 						this.isRegistering = false
 						
 					})
@@ -228,14 +235,12 @@
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					success: (res) => {
 						if (this.imgList.length != 0) {
-							
 							this.imgList = this.imgList.concat(res.tempFiles)
 							// this.form.imageData = this.form.imageData.concat(res.tempFiles)
 						} else {
 							this.imgList = res.tempFiles
 							// this.form.imageData = res.tempFiles
 						}
-						console.log(this.imgList)
 					}
 				});
 			},

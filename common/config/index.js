@@ -1,5 +1,5 @@
-// const requestURL = 'http://124.160.91.203:1057'
-const requestURL = 'http://192.168.156.38:8080'
+const requestURL = 'http://124.160.91.203:1057'
+// const requestURL = 'http://192.168.156.38:8080'
 
 const switchConfig = [{
 		stepName: '道岔外部方正检查',

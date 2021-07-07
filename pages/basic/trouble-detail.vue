@@ -7,39 +7,44 @@
 		<view class="trouble-detail-content">
 			<view class="flex justify-between  margin-top margin-bottom text-grey dashed-bottom padding-bottom">
 				<text class="text-bold">故障名称</text>
-				<view class="words">电风扇电机</view>
+				<view class="words">{{troubleDetail.troubleName}}</view>
 			</view>
 			<view class="flex justify-between  margin-top margin-bottom text-grey dashed-bottom padding-bottom">
 				<text class="text-bold">登记时间</text>
-				<view class="words">2020-05-20</view>
+				<view class="words">{{troubleDetail.createTime}}</view>
 			</view>
 			<view class="flex justify-between  margin-top margin-bottom text-grey dashed-bottom padding-bottom">
 				<text class="text-bold">故障等级</text>
-				<view class="words">一级</view>
-			</view>
-			<view class="flex justify-between  margin-top margin-bottom text-grey dashed-bottom padding-bottom">
-				<text class="text-bold">故障名称</text>
-				<view class="words">电风扇电机</view>
+				<view class="words">{{troubleDetail.troubleLevel | troubleFilter}}</view>
 			</view>
 			<view class="flex justify-between  margin-top margin-bottom text-grey dashed-bottom padding-bottom">
 				<text class="text-bold">线路车站</text>
-				<view class="words">1号线江陵路地铁站</view>
+				<view class="words">{{troubleDetail.lineStation}}</view>
 			</view>
 			<view class="flex justify-between  margin-top margin-bottom text-grey dashed-bottom padding-bottom">
 				<text class="text-bold">故障设备</text>
-				<view class="words">电风扇</view>
+				<view class="words">{{troubleDetail.deviceName}}</view>
 			</view>
 			<view class="flex justify-between  margin-top margin-bottom text-grey dashed-bottom padding-bottom">
 				<text class="text-bold">故障描述</text>
-				<view class="words">大师傅打发士大夫士大夫见识到了副驾驶的的撒反对</view>
+				<view class="words">{{troubleDetail.troubleText}}</view>
 			</view>
 			<view class="margin-top margin-bottom text-grey padding-bottom">
 				<view class="text-bold">故障图片信息</view>
-				<view class="flex flex-wrap justify-between margin-top">
-					<image class="trouble-image margin-bottom" src="../../static/dianlu.png" @click="previewImg"></image>
+				<view class="flex flex-wrap justify-between margin-top" >
+					<block v-for="(path, index) in troubleDetail.paths" :key="index" >
+						<image
+							
+							class="trouble-image margin-bottom" 
+							:src="$config.requestURL + path.split('8080')[1]" 
+							@click="previewImg(path)">
+						</image>
+						<!-- {{$config.requestURL + path.split('8080')[1]}} -->
+					</block>
+					
+				<!-- 	<image class="trouble-image " src="../../static/dianlu.png" @click="previewImg"></image>
 					<image class="trouble-image " src="../../static/dianlu.png" @click="previewImg"></image>
-					<image class="trouble-image " src="../../static/dianlu.png" @click="previewImg"></image>
-					<image class="trouble-image" src="../../static/dianlu.png" @click="previewImg"></image>
+					<image class="trouble-image" src="../../static/dianlu.png" @click="previewImg"></image> -->
 				</view>
 			</view>
 		</view>
@@ -50,15 +55,46 @@
 	export default {
 		data() {
 			return {
-				
+				troubleDetail: {}
 			}
 		},
+		onLoad(options) {
+			let id = options.id
+			console.log(id)
+			this.getTroubleDetail(id)
+		},
 		methods: {
-			previewImg() {
+			getTroubleDetail(id) {
+				this.$store.dispatch('getTtroubleDetail', {
+					url: '/portal/biRepairDetail2App.action',
+					data: {
+						fileId: id,
+						sessionId: this.$storage.getStorage('sessionId')
+					}
+				}).then(res => {
+					console.log(res, 'detail')
+					this.troubleDetail = res.data || {}
+				})
+			},
+			previewImg(path) {
+				let url = this.$config.requestURL + path.split('8080')[1]
 				uni.previewImage({
 					current: 0,
-					urls: ['../../static/dianlu.png']
+					urls: [url]
 				})
+			}
+		},
+		filters: {
+			troubleFilter(value) {
+				if (value == 'level1') {
+					return '一级'
+				} else if (value == 'level2') {
+					return '二级'
+				} else if (value == 'level3') {
+					return '三级'
+				} else {
+					return ''
+				}
 			}
 		}
 	}

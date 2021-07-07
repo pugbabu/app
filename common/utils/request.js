@@ -1,11 +1,10 @@
-import {
-	requestURL
-} from '../config/index.js'
+import  config from '../config/index.js'
 import store from '../../store/index.js'
-
+import Vue from 'vue'
+let vm = new Vue()
 function Request(options) {
 	store.commit('setSkelettion', true)
-	options.url = options.url.search(/(http|https)/) > -1 ? options.url : requestURL + options.url;
+	options.url = options.url.search(/(http|https)/) > -1 ? options.url : config.requestURL + options.url;
 	options.data = options.data || {}
 	options.header = options.header || {}
 	if (options.method) {
@@ -29,10 +28,24 @@ function Request(options) {
 		uni.request({
 			...options,
 			success: res => {
-				setTimeout(() => {
-					store.commit('setSkelettion', false)
-					resolve(res.data)
-				}, 300)
+				if (res.data.code == 500) {
+					uni.showToast({
+						icon: 'none',
+						title: res.data.msg || '服务器错误'
+					})
+					setTimeout(() => {
+						vm.$storage.removeStorage('sessionId');
+						uni.navigateTo({
+							url: '/pages/login/login'
+						})
+					}, 500)
+				} else {
+					setTimeout(() => {
+						store.commit('setSkelettion', false)
+						resolve(res.data)
+					}, 300)
+				}
+		
 
 			},
 			fail: (error) => {

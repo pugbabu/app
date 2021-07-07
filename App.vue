@@ -20,22 +20,25 @@
 			 */
 			// #ifdef APP-PLUS  
 			console.log(plus.runtime.appid, 'plus.runtime.appid')
+			let that = this
 			plus.runtime.getProperty(plus.runtime.appid, function(widgetInfo) {
 				console.log(widgetInfo, 'widgetInfo')
-				uni.setStorage({
-					key: 'widgetInfo',
-					data: widgetInfo
-				})
+				// uni.setStorage({
+				// 	key: 'widgetInfo',
+				// 	data: widgetInfo
+				// })
+				that.$storage.setStorage('widgetInfo', widgetInfo)
 				console.log(uni)
 				uni.request({
-					url: 'http://124.160.91.203:4400/pkg/update',
+					url: 'http://124.160.91.203:1058/pkg/update',
 					data: {
 						version: widgetInfo.version,
 						name: widgetInfo.name
 					},
+					method: 'POST',
 					success: (result) => {
 						console.log(result, 'result')
-						var data = result.data.data;
+						var data = result.data;
 						if (data.update && data.wgtUrl) {
 							uni.showModal({
 								title: '更新提示',

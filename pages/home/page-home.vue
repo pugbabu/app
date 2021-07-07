@@ -27,18 +27,18 @@
 		data() {
 			return {
 				elements: [
-					{
-						title: '资料库',
-						url: 'knowledge',
-						name: 'knowledge',
-						color: 'cyan',
-						cuIcon: 'newsfill'
-					},
+					// {
+					// 	title: '资料库',
+					// 	url: 'knowledge',
+					// 	name: 'knowledge',
+					// 	color: 'cyan',
+					// 	cuIcon: 'newsfill'
+					// },
 					{
 						title: '故障登记 ',
 						url: 'trouble-register',
 						name: 'trouble register',
-						color: 'mauve',
+						color: 'orange',
 						cuIcon: 'cuIcon'
 					},
 					{

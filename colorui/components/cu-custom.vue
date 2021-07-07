@@ -6,7 +6,7 @@
 					<text class="cuIcon-back"></text>
 					<slot name="backText"></slot>
 				</view>
-				<view class="content" :style="[{top:StatusBar + 'px'}]">
+				<view class="content" :style="[{top:StatusBar  + 'px'}]">
 					<slot name="content"></slot>
 				</view>
 				<slot name="right"></slot>
@@ -19,8 +19,15 @@
 	export default {
 		data() {
 			return {
+				// #ifdef APP-PLUS
+				StatusBar: this.StatusBar ? this.StatusBar : 40,
+				CustomBar: this.CustomBar ? this.CustomBar : 90
+				// #endif
+				// #ifdef H5
 				StatusBar: this.StatusBar,
 				CustomBar: this.CustomBar
+				// #endif
+			
 			};
 		},
 		name: 'cu-custom',
@@ -29,6 +36,7 @@
 				var StatusBar= this.StatusBar;
 				var CustomBar= this.CustomBar;
 				var bgImage = this.bgImage;
+				console.log(StatusBar, CustomBar, 'CustomBar')
 				var style = `height:${CustomBar}px;padding-top:${StatusBar}px;`;
 				if (this.bgImage) {
 					style = `${style}background-image:url(${bgImage});`;
